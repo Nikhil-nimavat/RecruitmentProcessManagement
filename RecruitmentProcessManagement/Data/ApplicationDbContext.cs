@@ -43,9 +43,10 @@ namespace RecruitmentProcessManagement.Data
                 .HasForeignKey(i => i.InterviewerID);
 
             modelBuilder.Entity<InterviewFeedback>()
-                .HasOne(ifb => ifb.Interviewer)
+                .HasOne(ifb => ifb.InterviewRound)
                 .WithMany()
-                .HasForeignKey(ifb => ifb.InterviewerID);
+                .HasForeignKey(ifb => ifb.InterviewRoundID)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<DocumentVerification>()
                 .HasOne(dv => dv.VerifiedByUser)
@@ -61,7 +62,7 @@ namespace RecruitmentProcessManagement.Data
                 .HasOne(n => n.User)
                 .WithMany()
                 .HasForeignKey(n => n.UserID);
-
+                
             // Ensuring the AspNetUser ID for Identity is treated as a string
             modelBuilder.Entity<IdentityUser>().Property(u => u.Id).HasColumnType("nvarchar(450)");
 

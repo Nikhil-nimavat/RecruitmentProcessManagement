@@ -1,7 +1,10 @@
-﻿namespace RecruitmentProcessManagement.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace RecruitmentProcessManagement.Models
 {
     public class InterviewRound
     {
+        [Key]
         public int InterviewRoundID { get; set; }
         public int InterviewID { get; set; }
         public int RoundNumber { get; set; }

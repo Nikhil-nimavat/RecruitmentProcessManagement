@@ -1,7 +1,10 @@
-﻿namespace RecruitmentProcessManagement.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace RecruitmentProcessManagement.Models
 {
     public class CandidateSkill
     {
+        [Key]
         public int CandidateSkillID { get; set; }
         public int CandidateID { get; set; }
         public int SkillID { get; set; }

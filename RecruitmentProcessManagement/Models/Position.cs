@@ -26,7 +26,7 @@ namespace RecruitmentProcessManagement.Models
         public int? LinkedCandidateID { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
 
         [DataType(DataType.Date)]
         public DateTime? ModifiedDate { get; set; }

@@ -6,12 +6,20 @@ namespace RecruitmentProcessManagement.Models
     {
         [Key]
         public int CandidateID { get; set; }
-        public string Name { get; set; }
+        public required string Name { get; set; }
+
+        [EmailAddress]
         public string Email { get; set; }
+
+        [Phone]
         public string PhoneNumber { get; set; }
         public string ResumePath { get; set; }
         public string ProfileStatus { get; set; }
-        public DateTime CreatedDate { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
+
+        [DataType(DataType.Date)]
         public DateTime? ModifiedDate { get; set; }
 
         // Navigation Property...
