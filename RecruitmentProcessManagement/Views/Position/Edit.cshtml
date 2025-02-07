@@ -1,0 +1,50 @@
+﻿@model RecruitmentProcessManagement.Models.Position
+
+@{
+    ViewData["Title"] = "Edit Position";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="Edit" method="post" class="mt-3">
+    <input asp-for="PositionID" type="hidden" />
+
+    <div class="form-group">
+        <label asp-for="JobTitle" class="control-label"></label>
+        <input asp-for="JobTitle" class="form-control" />
+        <span asp-validation-for="JobTitle" class="text-danger"></span>
+    </div>
+    
+    <div class="form-group">
+        <label asp-for="MinRequiredSkills" class="control-label"></label>
+        <input asp-for="MinRequiredSkills" class="form-control" />
+        <span asp-validation-for="MinRequiredSkills" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PreferredSkills" class="control-label"></label>
+        <input asp-for="PreferredSkills" class="form-control" />
+        <span asp-validation-for="PreferredSkills" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="JobDescription" class="control-label"></label>
+        <textarea asp-for="JobDescription" class="form-control"></textarea>
+        <span asp-validation-for="JobDescription" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Status" class="control-label"></label>
+        <select asp-for="Status" class="form-control">
+            <option value="Open">Open</option>
+            @(Model.Status == "Open" ? "Selected" : "")
+            <option value="On Hold">On Hold</option>
+            @(Model.Status == "On Hold" ? "selected" : "")
+        </select>
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-warning">Update Position</button>
+</form>
+
+<a href="@Url.Action("Index")" class="btn btn-secondary mt-3">Back to List</a>

@@ -1,0 +1,15 @@
+﻿@model RecruitmentProcessManagement.Models.Position
+
+@{
+    ViewData["Title"] = "Delete Position";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>Are you sure you want to delete the position titled "<strong>@Model.JobTitle</strong>"?</p>
+
+<form asp-controller="Position" asp-action="DeleteConfirmed" method="post">
+    <input asp-for="PositionID" type="hidden" />
+    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    <a href="@Url.Action("Index")" class="btn btn-secondary">Cancel</a>
+</form>

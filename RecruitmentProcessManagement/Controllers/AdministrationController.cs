@@ -6,12 +6,12 @@ using RecruitmentProcessManagement.Models;
 
 namespace RecruitmentProcessManagement.Controllers
 {
-    [Authorize (Roles = "Admin")]
+    //[Authorize (Roles = "Admin")]
     public class AdministrationController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<IdentityUser> _userManager;
-        public AdministrationController(RoleManager<IdentityRole> roleManager,UserManager<IdentityUser> userManager)
+        public AdministrationController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
         { 
             _roleManager = roleManager;
             _userManager = userManager;
@@ -43,7 +43,7 @@ namespace RecruitmentProcessManagement.Controllers
 
                     if (result.Succeeded)
                     {
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("ListRoles");
                     }
 
                     foreach (IdentityError error in result.Errors)

@@ -16,6 +16,8 @@ namespace RecruitmentProcessManagement.Models
         public string ResumePath { get; set; }
         public string ProfileStatus { get; set; }
 
+        public string CollegeName { get; set; }
+
         [DataType(DataType.Date)]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 

@@ -29,6 +29,10 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
 
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Position" asp-action="Index">Jobs</a>
+                        </li>
+
                         @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                         {
                             <li class="nav-item dropdown">
@@ -49,13 +53,25 @@
                         @*If the user is signed-in the only display Logout link*@
                         @if (SignInManager.IsSignedIn(User))
                         {
-                            <li class="nav-item">
-                                <form method="post" asp-controller="Account" asp-action="Logout">
-                                    <button type="submit" style="width:auto"
-                                            class="nav-link btn btn-link py-0">
-                                        Logout @User?.Identity?.Name
-                                    </button>
-                                </form>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                    Account
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    <a class="dropdown-item" asp-controller="Account"
+                                       asp-action="MyProfile">MyProfile</a>
+
+                                    <a class="dropdown-item" asp-controller="Account"
+                                       asp-action="EditProfile">EditProfile</a>
+
+                                    <form method="post" asp-controller="Account" asp-action="Logout">
+                                        <button type="submit" class="dropdown-item" aria-labelledby="navbarDropdownMenuLink">
+                                            SignOut
+                                        </button>
+                                    </form>
+
+                                </ul>
                             </li>
                         }
                         else

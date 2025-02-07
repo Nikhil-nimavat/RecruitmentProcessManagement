@@ -1,12 +1,17 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RecruitmentProcessManagement.Data;
+using RecruitmentProcessManagement.Repository;
+using RecruitmentProcessManagement.Repository.Interfaces;
+using RecruitmentProcessManagement.Services;
+using RecruitmentProcessManagement.Services.Intefaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// SQL Server Connection
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConncetion")));
 
@@ -21,6 +26,11 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(
             options.Password.RequiredUniqueChars = 4;
             }).AddEntityFrameworkStores<ApplicationDbContext>()
            .AddDefaultTokenProviders();
+
+
+// Add DI Services.
+builder.Services.AddScoped<IPositionRepository, PositionRepository>();
+builder.Services.AddScoped<IPositionService, PositionService>();
 
 var app = builder.Build();
 
@@ -42,6 +52,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Account}/{action=Register}/{id?}");
+    pattern: "{controller=Account}/{action=Login}/{id?}");
 
 app.Run();

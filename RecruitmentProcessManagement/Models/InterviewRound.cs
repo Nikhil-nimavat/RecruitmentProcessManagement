@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using RecruitmentProcessManagement.Models;
 
 namespace RecruitmentProcessManagement.Models
 {
@@ -12,7 +13,11 @@ namespace RecruitmentProcessManagement.Models
         public string Feedback { get; set; }
         public int Rating { get; set; }
 
+        [DataType(DataType.Date)]
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
+
         // Navgational Property
         public Interview Interview { get; set; }
+        public List<InterviewRoundInterviewer> InterviewRoundInterviewers { get; set; }
     }
 }

@@ -13,7 +13,6 @@ namespace RecruitmentProcessManagement.Models
 
         [DataType(DataType.Date)]
         public DateTime InterviewDate { get; set; }
-        public string InterviewerID { get; set; }  // IdentityUser ID ()
         public string Status { get; set; }
         public string Feedback { get; set; }
 
@@ -21,6 +20,6 @@ namespace RecruitmentProcessManagement.Models
 
         public Candidate Candidate { get; set; }
         public Position Position { get; set; }
-        public IdentityUser Interviewer { get; set; }  // Navigation to AspNetUser (Identity Table)
+        public List<InterviewRound> InterviewRounds { get; set; }
     }
 }
