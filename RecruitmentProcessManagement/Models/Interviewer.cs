@@ -19,6 +19,6 @@ namespace RecruitmentProcessManagement.Models
         public DateTime? ModifiedDate { get; set; }
 
         // Navigation Property
-        public List<InterviewerSkill> InterviewerSkills { get; set; }
+        public ICollection<InterviewerSkill> InterviewerSkills { get; set; }
     }
 }

@@ -7,8 +7,9 @@ namespace RecruitmentProcessManagement.Models
     {
         [Key]
         public int InterviewID { get; set; }
-        public int CandidateID { get; set; }
+        public string CandidateID { get; set; }
         public int PositionID { get; set; }
+        public string InterviewerID { get; set; }
         public string InterviewType { get; set; }
 
         [DataType(DataType.Date)]
@@ -20,6 +21,7 @@ namespace RecruitmentProcessManagement.Models
 
         public Candidate Candidate { get; set; }
         public Position Position { get; set; }
-        public List<InterviewRound> InterviewRounds { get; set; }
+        public ICollection<InterviewRound> InterviewRounds { get; set; }
+
     }
 }

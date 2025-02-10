@@ -5,7 +5,7 @@ namespace RecruitmentProcessManagement.Models
     public class Candidate
     {
         [Key]
-        public int CandidateID { get; set; }
+        public string CandidateID { get; set; }
         public required string Name { get; set; }
 
         [EmailAddress]
@@ -14,9 +14,11 @@ namespace RecruitmentProcessManagement.Models
         [Phone]
         public string PhoneNumber { get; set; }
         public string ResumePath { get; set; }
-        public string ProfileStatus { get; set; }
 
-        public string CollegeName { get; set; }
+        [MaxLength(50)]
+        public string? ProfileStatus { get; set; }
+        public string? CollegeName { get; set; }
+        public string? ExtractedText { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime CreatedDate { get; set; } = DateTime.Now;

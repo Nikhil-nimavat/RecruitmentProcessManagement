@@ -13,7 +13,7 @@ namespace RecruitmentProcessManagement.Models
         [DataType(DataType.Date)]
         public DateTime EventDate { get; set; }
         public string Location { get; set; } 
-        public int EventOrganizerID { get; set; } 
+        public string? EventOrganizerID { get; set; } 
         public int TotalParticipants { get; set; } 
         public string EventStatus { get; set; }
 
@@ -25,7 +25,7 @@ namespace RecruitmentProcessManagement.Models
 
         // Navigaiton Property
         public IdentityUser EventOrganizer { get; set; }
-        public List<EventCandidate> EventCandidates { get; set; }
-        public List<EventInterviewer> EventInterviewers { get; set; }
+        public ICollection<EventCandidate> EventCandidates { get; set; }
+        public ICollection<EventInterviewer> EventInterviewers { get; set; }
     }
 }

@@ -5,14 +5,14 @@ namespace RecruitmentProcessManagement.Repository.Interfaces
 {
     public interface ICandidateRepository
     {
-        Task<IEnumerable<Candidate>> GetAllCandidatesAsync();
+        //Task<IEnumerable<Candidate>> GetAllCandidatesAsync();
 
-        Task<Candidate> GetCandidateById(int id);
+        //Task<Candidate> GetCandidateById(int id);
 
         Task AddCandidate(Candidate candidate);
 
-        Task UpdateCandidate(Candidate candidate);
+        //Task UpdateCandidate(Candidate candidate);
 
-        Task DeleteCandidateById(int id);
+        //Task DeleteCandidateById(int id);
     }
 }

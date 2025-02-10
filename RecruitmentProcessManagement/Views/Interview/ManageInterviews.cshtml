@@ -1,0 +1,27 @@
+﻿<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.js"></script>
+
+<div id="calendar"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            events: '/Interview/GetScheduledInterviews', // Fetch scheduled interviews from API
+            dateClick: function (info) {
+                window.location.href = '/Interview/ScheduleInterview?date=' + info.dateStr;
+            }
+        });
+        calendar.render();
+    });
+</script>
+
+<script>
+    function loadBestInterviewers(positionId) {
+        $.get('/Interview/GetBestInterviewers?positionId=' + positionId, function (data) {
+            $('#interviewerDropdown').empty();
+            data.forEach(i => $('#interviewerDropdown').append(`<option value="${i.id}">${i.fullName}</option>`));
+        });
+    }
+</script>

@@ -7,7 +7,7 @@ namespace RecruitmentProcessManagement.Models
     {
         [Key]
         public int VerificationID { get; set; }
-        public int CandidateID { get; set; }
+        public int? CandidateID { get; set; }
         public string VerificationStatus { get; set; }
 
         [DataType(DataType.Date)]

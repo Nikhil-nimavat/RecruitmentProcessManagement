@@ -56,9 +56,10 @@
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                    Account
+                                    Profile
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    @* <i class="bi bi-person-circle"></i>  Serach where to add svg code right now it's in site.css*@
                                     <a class="dropdown-item" asp-controller="Account"
                                        asp-action="MyProfile">MyProfile</a>
 
@@ -70,7 +71,6 @@
                                             SignOut
                                         </button>
                                     </form>
-
                                 </ul>
                             </li>
                         }
@@ -89,6 +89,18 @@
                         }
                     </ul>
                 </div>
+            </div>
+            <div id="notifications">
+                @if (ViewBag.Notifications != null)
+                {
+                    @foreach (var notification in ViewBag.Notifications)
+                    {
+                        <div class="alert alert-info alert-dismissible fade show" role="alert">
+                            @notification.Message
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+                }
             </div>
         </nav>
     </header>

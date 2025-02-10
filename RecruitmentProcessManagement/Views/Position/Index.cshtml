@@ -1,21 +1,22 @@
 ﻿@model IEnumerable<RecruitmentProcessManagement.Models.Position>
-
 @{
     ViewData["Title"] = "Job Positions";
 }
 
 <h1>@ViewData["Title"]</h1>
 
-<a href="@Url.Action("Create")" class="btn btn-primary mb-3">Create New Position</a>
+<a class="btn btn-primary mb-3" asp-controller="Posistion" asp-action="Create">Create New Position</a>
+
+<h2>Job Positions</h2>
 
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th>Position Title</th>
-            <th>Status</th>
-            <th>Minimum Required Skills</th>
+            <th>Job Title</th>
+            <th>Required Skills</th>
             <th>Preferred Skills</th>
-            <th>Job Description</th>
+            <th>Experience Needed</th> 
+            <th>Status</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -24,23 +25,76 @@
         {
             <tr>
                 <td>@position.JobTitle</td>
-                <td>@position.Status</td>
                 <td>@position.MinRequiredSkills</td>
                 <td>@position.PreferredSkills</td>
-                <td>@position.JobDescription</td>
+                <td>@position.YearsOfExperience</td>
+                <td>@position.Status</td>
                 <td>
                     <a href="@Url.Action("Edit", new { id = position.PositionID })" class="btn btn-warning btn-sm">Edit</a>
                     <a href="@Url.Action("Delete", new { id = position.PositionID })" class="btn btn-danger btn-sm">Delete</a>
+                    <a asp-controller="Position" asp-action="Apply" asp-route-positionId="@position.PositionID" class="btn btn-success">
+                        Apply
+                    </a>
 
+                    <button class="btn btn-info" onclick="toggleDetails(@position.PositionID)">Expand</button>
                     @if (position.Status != "Closed")
                     {
-                        <form action="@Url.Action("Close", new { id = position.PositionID })" method="post" style="display:inline;">
-                            <input type="text" name="closureReason" class="form-control d-inline-block w-auto" placeholder="Reason for closure" required />
-                            <button type="submit" class="btn btn-danger btn-sm mt-2">Close Position</button>
-                        </form>
+                        <button class="btn btn-danger" onclick="openCloseModal(@position.PositionID)">Close</button>
                     }
+                </td>
+            </tr>
+            <tr id="details-@position.PositionID" style="display: none;">
+                <td colspan="6">
+                    <strong>Job Description:</strong> @position.JobDescription <br />
+                    <strong>Position Closed Date:</strong> @(position.PositionClosedDate?.ToString("yyyy-MM-dd") ?? "N/A") <br />
+                    <strong>Reason for Closure:</strong> @(position.ReasonForClosure ?? "N/A") <br />
+                    <strong>Linked Candidate:</strong> @(position.LinkedCandidate?.Name ?? "N/A")
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<div class="modal fade" id="closePositionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Close Position</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="closePositionForm" method="post" asp-action="ClosePosition">
+                    <input type="hidden" name="id" id="positionId" />
+                    <div class="mb-3">
+                        <label for="reasonForClosure" class="form-label">Reason for Closure</label>
+                        <input type="text" class="form-control" name="reasonForClosure" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="linkedCandidateId" class="form-label">Linked Candidate (Optional)</label>
+                        <select class="form-control" name="linkedCandidateId">
+                            <option value="">None</option>
+                            @foreach (var candidate in ViewBag.Candidates)
+                            {
+                                <option value="@candidate.CandidateID">@candidate.FullName</option>
+                            }
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-danger">Close Position</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleDetails(positionId) {
+        var detailsRow = document.getElementById('details-' + positionId);
+        detailsRow.style.display = detailsRow.style.display === 'none' ? '' : 'none';
+    }
+
+    function openCloseModal(positionId) {
+        document.getElementById('positionId').value = positionId;
+        var closeModal = new bootstrap.Modal(document.getElementById('closePositionModal'));
+        closeModal.show();
+    }
+</script>

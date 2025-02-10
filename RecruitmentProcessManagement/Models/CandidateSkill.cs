@@ -6,7 +6,7 @@ namespace RecruitmentProcessManagement.Models
     {
         [Key]
         public int CandidateSkillID { get; set; }
-        public int CandidateID { get; set; }
+        public string CandidateID { get; set; }
         public int SkillID { get; set; }
         public int YearsOfExperience { get; set; }
 

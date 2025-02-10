@@ -45,6 +45,22 @@ namespace RecruitmentProcessManagement.Services
                 _context.Positions.Remove(position);
                 await _context.SaveChangesAsync();
             }
+        } 
+        public async Task ClosePositionAsync(int positionId, string reasonForClosure, int? linkedCandidateId)
+        {
+            var position = await _context.Positions.FindAsync(positionId);
+            if (position == null) throw new Exception("Position not found");
+
+            position.Status = "Closed";
+            position.ReasonForClosure = reasonForClosure;
+            position.PositionClosedDate = DateTime.Now;
+
+            if (linkedCandidateId.HasValue)
+            {
+                position.LinkedCandidateID = linkedCandidateId;
+            }
+
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -1,0 +1,40 @@
+﻿@model List<CandidateReviewViewModel>
+
+@{
+    ViewData["Title"] = "Candidate Reviews";
+}
+
+<h2 class="mb-4">Candidate Reviews</h2>
+
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Candidate Name</th>
+            <th>Position</th>
+            <th>Status</th>
+            <th>Review Date</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var review in Model)
+        {
+            <tr>
+                <td>@review.CandidateID</td>
+                <td>@review.PositionID</td>
+                <td>
+                    <span class="badge @(review.Status == "Shortlisted" ? "bg-success" : "bg-warning")">
+                        @review.Status
+                    </span>
+                </td>
+                <td>@review.ReviewDate.ToString("yyyy-MM-dd")</td>
+                <td>
+                    <a asp-action="ReviewCandidate" asp-route-candidateId="@review.CandidateID"
+                       asp-route-positionId="@review.PositionID" class="btn btn-primary btn-sm">
+                        Review
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

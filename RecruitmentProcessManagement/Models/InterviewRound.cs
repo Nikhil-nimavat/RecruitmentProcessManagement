@@ -18,6 +18,6 @@ namespace RecruitmentProcessManagement.Models
 
         // Navgational Property
         public Interview Interview { get; set; }
-        public List<InterviewRoundInterviewer> InterviewRoundInterviewers { get; set; }
+        public ICollection<InterviewRoundInterviewer> InterviewRoundInterviewers { get; set; }
     }
 }

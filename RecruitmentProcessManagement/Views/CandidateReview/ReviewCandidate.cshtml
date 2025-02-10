@@ -1,0 +1,63 @@
+﻿@model CandidateReviewViewModel
+
+@{
+    ViewData["Title"] = "Review Candidate";
+}
+
+@if (ViewBag.PreviousScreeningDate != null)
+{
+    <div class="alert alert-warning">
+        This candidate was previously screened on @ViewBag.PreviousScreeningDate.
+    </div>
+}
+
+<h2>Review Candidate</h2>
+
+<form asp-action="SubmitReview" method="post">
+    <input type="hidden" asp-for="CandidateID" />
+    <input type="hidden" asp-for="PositionID" />
+    <input type="hidden" asp-for="ReviewerID" />
+
+    <div class="mb-3">
+        <label class="form-label">Comments</label>
+        <textarea asp-for="Comments" class="form-control"></textarea>
+        <span asp-validation-for="Comments" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Status</label>
+        <select asp-for="Status" class="form-control">
+            <option value="">-- Select Status --</option>
+            <option value="Shortlisted">Shortlisted</option>
+            <option value="Rejected">Rejected</option>
+        </select>
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+
+    <h4>Candidate Skills</h4>
+    <div id="skillsContainer">
+        @for (int i = 0; i < Model.CandidateSkills.Count; i++)
+        {
+            <div class="mb-2">
+                <label class="form-label">Skill</label>
+                <select asp-for="CandidateSkills[i].SkillID" class="form-control">
+                    <option value="">-- Select Skill --</option>
+                    <option value="1">C#</option>
+                    <option value="2">Java</option>
+                    <option value="3">SQL</option>
+                </select>
+
+                <label class="form-label">Years of Experience</label>
+                <input asp-for="CandidateSkills[i].YearsOfExperience" class="form-control" type="number" />
+                <span asp-validation-for="CandidateSkills[i].YearsOfExperience" class="text-danger"></span>
+            </div>
+        }
+    </div>
+
+    <button type="submit" class="btn btn-success">Submit Review</button>
+</form>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

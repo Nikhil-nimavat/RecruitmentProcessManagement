@@ -16,7 +16,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConncetion")));
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(
-            options =>
+    options =>
             {
             options.Password.RequireDigit = true;
             options.Password.RequiredLength = 8;
@@ -24,13 +24,18 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(
             options.Password.RequireUppercase = true;
             options.Password.RequireLowercase = true;
             options.Password.RequiredUniqueChars = 4;
-            }).AddEntityFrameworkStores<ApplicationDbContext>()
-           .AddDefaultTokenProviders();
+            })
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 
 // Add DI Services.
 builder.Services.AddScoped<IPositionRepository, PositionRepository>();
 builder.Services.AddScoped<IPositionService, PositionService>();
+
+builder.Services.AddScoped<ICandidateService, CandidateService>();
+builder.Services.AddScoped<ICandidateRepository, CandidateRepository>();
+
 
 var app = builder.Build();
 

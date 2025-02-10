@@ -1,0 +1,42 @@
+﻿@model Candidate
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+@if (!string.IsNullOrEmpty(Model.ExtractedText))
+{
+    <div class="alert alert-info">
+        <strong>Extracted CV Data:</strong>
+        <pre>@Model.ExtractedText</pre>
+    </div>
+}
+
+<h2>Apply for Position</h2>
+
+<form asp-controller="Position" asp-action="Apply" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="CandidateID" />
+
+    <h3> </h3>
+    <div class="form-group">
+        <label for="cvFile">Upload CV (PDF, DOC, TXT)</label>
+        <input type="file" name="cvFile" class="form-control" accept=".pdf,.doc,.docx,.txt" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Name">Full Name</label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Email">Email</label>
+        <input asp-for="Email" type="email" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PhoneNumber">Phone Number</label>
+        <input asp-for="PhoneNumber" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit Application</button>
+</form>

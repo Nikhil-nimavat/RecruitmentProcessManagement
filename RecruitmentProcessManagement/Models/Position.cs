@@ -18,12 +18,16 @@ namespace RecruitmentProcessManagement.Models
 
         [StringLength(1000, MinimumLength = 10, ErrorMessage = "Job Description should have atleast 10 characters.")]
         public string PreferredSkills { get; set; }
+
+        public string YearsOfExperience { get; set; }
+
+        [MaxLength(50)]
         public string Status { get; set; }
         public string? ReasonForClosure { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime? PositionClosedDate { get; set; }
-        public int? LinkedCandidateID { get; set; }
+        public string? LinkedCandidateID { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime? CreatedDate { get; set; } = DateTime.Now;

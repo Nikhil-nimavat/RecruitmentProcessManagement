@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Reflection.Emit;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using RecruitmentProcessManagement.Models;
@@ -21,6 +22,13 @@ namespace RecruitmentProcessManagement.Data
         public DbSet<FinalSelection> FinalSelections { get; set; }
         public DbSet<CandidateStatusHistory> CandidateStatusHistories { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Interviewer> Interviewers { get; set; }
+        public DbSet<InterviewerSkill> InterviewerSkills { get; set; }
+        public DbSet<InterviewRoundInterviewer> InterviewRoundInterviewers { get; set; }
+        public DbSet<Event> Events { get; set; }
+        public DbSet<EventCandidate> EventsCandidates { get; set; }
+        public DbSet<EventInterviewer> EventsInterviewers { get; set; }
+
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -31,16 +39,11 @@ namespace RecruitmentProcessManagement.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Defining relationships explicitly for Identity references (IdentityUser Tables)
-            modelBuilder.Entity<CandidateReview>()
-                .HasOne(cr => cr.Reviewer)
+            modelBuilder.Entity<Position>()
+                .HasOne(p => p.LinkedCandidate)
                 .WithMany()
-                .HasForeignKey(cr => cr.ReviewerID);
-
-            //modelBuilder.Entity<Interview>()
-            //    .HasOne(i => i.Interviewer)
-            //    .WithMany()
-            //    .HasForeignKey(i => i.InterviewerID);
+                .HasForeignKey(p => p.LinkedCandidateID)
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<InterviewFeedback>()
                 .HasOne(ifb => ifb.InterviewRound)
@@ -48,23 +51,92 @@ namespace RecruitmentProcessManagement.Data
                 .HasForeignKey(ifb => ifb.InterviewRoundID)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<DocumentVerification>()
-                .HasOne(dv => dv.VerifiedByUser)
+            modelBuilder.Entity<PositionSkill>()
+                .HasOne(ps => ps.Position)
+                .WithMany(p => p.PositionSkills)
+                .HasForeignKey(ps => ps.PositionID);
+
+            modelBuilder.Entity<PositionSkill>()
+                .HasOne(ps => ps.Skill)
+                .WithMany(s => s.PositionSkills)
+                .HasForeignKey(ps => ps.SkillID);
+
+            modelBuilder.Entity<CandidateSkill>()
+                .HasOne(cs => cs.Candidate)
+                .WithMany(c => c.CandidateSkills)
+                .HasForeignKey(cs => cs.CandidateID);
+
+            modelBuilder.Entity<CandidateSkill>()
+                .HasOne(cs => cs.Skill)
+                .WithMany(s => s.CandidateSkills)
+                .HasForeignKey(cs => cs.SkillID);
+
+            modelBuilder.Entity<CandidateDocument>()
+                .HasOne(cd => cd.Candidate)
+                .WithMany(c => c.CandidateDocuments)
+                .HasForeignKey(cd => cd.CandidateID);
+
+            modelBuilder.Entity<CandidateReview>()
+                .HasOne(cr => cr.Candidate)
+                .WithMany(c => c.CandidateReviews)
+                .HasForeignKey(cr => cr.CandidateID);
+
+            modelBuilder.Entity<CandidateReview>()
+                .HasOne(cr => cr.Position)
+                .WithMany(p => p.CandidateReviews)
+                .HasForeignKey(cr => cr.PositionID);
+
+            modelBuilder.Entity<CandidateReview>()
+                .HasOne(cr => cr.Reviewer)
                 .WithMany()
-                .HasForeignKey(dv => dv.VerifiedBy);
+                .HasForeignKey(cr => cr.ReviewerID);
+
+            modelBuilder.Entity<Interview>()
+                .HasOne(i => i.Candidate)
+                .WithMany(c => c.Interviews)
+                .HasForeignKey(i => i.CandidateID);
+
+            modelBuilder.Entity<Interview>()
+                .HasOne(i => i.Position)
+                .WithMany(p => p.Interviews)
+                .HasForeignKey(i => i.PositionID);
+
+            modelBuilder.Entity<DocumentVerification>()
+                .HasOne(dv => dv.Candidate)  
+                .WithMany(c => c.DocumentVerifications)  
+                .HasForeignKey(dv => dv.CandidateID)  
+                .OnDelete(DeleteBehavior.SetNull);  
+
+            modelBuilder.Entity<DocumentVerification>()
+                .HasOne(dv => dv.VerifiedByUser)  
+                .WithMany()  
+                .HasForeignKey(dv => dv.VerifiedBy);  
+
+            modelBuilder.Entity<CandidateStatusHistory>()
+                .HasOne(csh => csh.Candidate)
+                .WithMany(c => c.CandidateStatusHistories)
+                .HasForeignKey(csh => csh.CandidateID);
 
             modelBuilder.Entity<CandidateStatusHistory>()
                 .HasOne(csh => csh.ChangedByUser)
                 .WithMany()
                 .HasForeignKey(csh => csh.ChangedBy);
 
+            modelBuilder.Entity<Event>()
+                .HasOne(e => e.EventOrganizer)
+                .WithMany()
+                .HasForeignKey(e => e.EventOrganizerID)
+                .OnDelete(DeleteBehavior.SetNull);
+
             modelBuilder.Entity<Notification>()
                 .HasOne(n => n.User)
                 .WithMany()
                 .HasForeignKey(n => n.UserID);
-                
+
             // Ensuring the AspNetUser ID for Identity is treated as a string
             modelBuilder.Entity<IdentityUser>().Property(u => u.Id).HasColumnType("nvarchar(450)");
         }
+
     }
 }
+

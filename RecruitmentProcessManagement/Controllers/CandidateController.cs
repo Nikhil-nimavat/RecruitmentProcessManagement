@@ -6,9 +6,9 @@ namespace RecruitmentProcessManagement.Controllers
 {
     public class CandidateController : Controller
     {
-        private readonly ICandidateRepository _repository;
+        private readonly CandidateRepository _repository;
 
-        public CandidateController(ICandidateRepository repository)
+        public CandidateController(CandidateRepository repository)
         {
             _repository = repository;
         }
@@ -35,46 +35,46 @@ namespace RecruitmentProcessManagement.Controllers
             return View(candidate);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Edit(int id)
-        { 
-            var candidate = await _repository.GetCandidateById(id);
-            if (candidate == null)
-            {
-                NotFound(); 
-            }
+        //[HttpGet]
+        //public async Task<IActionResult> Edit(int id)
+        //{ 
+        //    var candidate = await _repository.GetCandidateById(id);
+        //    if (candidate == null)
+        //    {
+        //        NotFound(); 
+        //    }
 
-            return View(candidate);
-        }
+        //    return View(candidate);
+        //}
 
-        [HttpPost]
-        public async Task<IActionResult> Edit(Candidate candidate)
-        {
-            if (ModelState.IsValid)
-            {
-                await _repository.UpdateCandidate(candidate);
-                return RedirectToAction(nameof(Index));
-            }
-            return View(candidate);
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> Edit(Candidate candidate)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        await _repository.UpdateCandidate(candidate);
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(candidate);
+        //}
 
-        [HttpGet]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var candidate = await _repository.GetCandidateById(id);
-            if (candidate == null)
-            {
-                return NotFound();
-            }
+        //[HttpGet]
+        //public async Task<IActionResult> Delete(int id)
+        //{
+        //    var candidate = await _repository.GetCandidateById(id);
+        //    if (candidate == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(candidate);
-        }
+        //    return View(candidate);
+        //}
 
-        [HttpPost]
-        public async Task<IActionResult> Delete(Candidate candidate)
-        {
-            await _repository.DeleteCandidateById(candidate.CandidateID);
-            return View(Index);
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> Delete(Candidate candidate)
+        //{
+        //    await _repository.DeleteCandidateById(candidate.CandidateID);
+        //    return View(nameof(Index));
+        //}
     }
 }

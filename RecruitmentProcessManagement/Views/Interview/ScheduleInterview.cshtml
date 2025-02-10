@@ -1,0 +1,26 @@
+﻿<h2>Schedule Interview</h2>
+
+<form asp-action="ScheduleInterview" method="post">
+    <input type="hidden" name="positionId" value="@ViewBag.PositionId" />
+
+    <label>Select Candidate:</label>
+    <select name="candidateId" class="form-control">
+        @foreach (var candidate in ViewBag.Candidates)
+        {
+            <option value="@candidate.CandidateID">@candidate.FullName</option>
+        }
+    </select>
+
+    <label>Select Interviewers (Panel Interview Supported):</label>
+    <select name="interviewerIds" class="form-control" multiple>
+        @foreach (var interviewer in ViewBag.Interviewers)
+        {
+            <option value="@interviewer.Id">@interviewer.FullName</option>
+        }
+    </select>
+
+    <label>Select Interview Date:</label>
+    <input type="datetime-local" name="interviewDate" class="form-control" required />
+
+    <button type="submit" class="btn btn-primary">Schedule Interview</button>
+</form>
