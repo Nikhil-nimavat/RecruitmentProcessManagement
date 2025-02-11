@@ -5,7 +5,7 @@ namespace RecruitmentProcessManagement.Models
     public class Candidate
     {
         [Key]
-        public string CandidateID { get; set; }
+        public int CandidateID { get; set; }
         public required string Name { get; set; }
 
         [EmailAddress]

@@ -14,11 +14,11 @@ namespace RecruitmentProcessManagement.Services
             _context = context;
         }
 
-        public async Task SendInterviewNotification(string candidateId, string message)
+        public async Task SendInterviewNotification(int candidateId, string message)
         {
             var notification = new Notification
             {
-                UserID = candidateId,
+                UserID = candidateId.ToString(),
                 Message = message,
                 CreatedDate = DateTime.Now
             };
@@ -27,10 +27,10 @@ namespace RecruitmentProcessManagement.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Notification>> GetUserNotifications(string userId)
+        public async Task<List<Notification>> GetUserNotifications(int userId)
         {
             return await _context.Notifications
-                .Where(n => n.UserID == userId)
+                .Where(n => n.UserID == userId.ToString())
                 .OrderByDescending(n => n.CreatedDate)
                 .ToListAsync();
         }

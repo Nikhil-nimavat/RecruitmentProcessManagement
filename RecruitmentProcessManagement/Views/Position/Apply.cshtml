@@ -1,8 +1,17 @@
-﻿@model Candidate
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-}
+﻿@model RecruitmentProcessManagement.Models.Candidate
+
+<h2>Apply for Position</h2>
+
+<form asp-controller="Position" asp-action="UploadCV" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="positionId" value="@ViewBag.PositionId" />
+
+    <div class="form-group">
+        <label for="cvFile">Upload CV (PDF, DOC, TXT)</label>
+        <input type="file" name="cvFile" class="form-control" accept=".pdf,.doc,.docx,.txt" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">CV Data</button>
+</form>
 
 @if (!string.IsNullOrEmpty(Model.ExtractedText))
 {
@@ -12,16 +21,10 @@
     </div>
 }
 
-<h2>Apply for Position</h2>
-
-<form asp-controller="Position" asp-action="Apply" method="post" enctype="multipart/form-data">
-    <input type="hidden" asp-for="CandidateID" />
-
-    <h3> </h3>
-    <div class="form-group">
-        <label for="cvFile">Upload CV (PDF, DOC, TXT)</label>
-        <input type="file" name="cvFile" class="form-control" accept=".pdf,.doc,.docx,.txt" />
-    </div>
+<form asp-controller="Position" asp-action="Apply" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <input type="hidden" name="positionId" value="@ViewBag.PositionId" />
+    <input type="hidden" asp-for="ResumePath" />
 
     <div class="form-group">
         <label asp-for="Name">Full Name</label>
@@ -38,5 +41,5 @@
         <input asp-for="PhoneNumber" class="form-control" />
     </div>
 
-    <button type="submit" class="btn btn-primary">Submit Application</button>
+    <button type="submit" class="btn btn-success">Submit Application</button>
 </form>

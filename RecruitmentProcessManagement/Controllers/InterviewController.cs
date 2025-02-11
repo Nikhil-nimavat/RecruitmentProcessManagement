@@ -23,12 +23,12 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetBestInterviewers(int positionId)
-        //{
-        //    var interviewers = await _interviewService.GetBestInterviewers(positionId);
-        //    return Json(interviewers);
-        //}
+        [HttpGet]
+        public async Task<IActionResult> GetBestInterviewers(int positionId)
+        {
+            var interviewers = await _interviewService.GetBestInterviewers(positionId);
+            return Json(interviewers);
+        }
 
         [HttpPost]
         public async Task<IActionResult> DefineInterviewRounds(int positionId, List<string> roundTypes)
@@ -72,44 +72,47 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ScheduleInterview(string candidateId, int positionId, List<string> interviewerIds, DateTime interviewDate)
+        public async Task<IActionResult> ScheduleInterview(ScheduleInterviewViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             var interview = new Interview
             {
-                CandidateID = candidateId,
-                PositionID = positionId,
-                InterviewDate = interviewDate,
+                CandidateID = model.CandidateId,
+                PositionID = model.PositionId,
+                InterviewType = model.InterviewType,
+                InterviewDate = model.InterviewDate,  
                 Status = "Scheduled"
             };
 
-            _context.Interviews.Add(interview);
+            _context.Interviews.Add(interview);  
             await _context.SaveChangesAsync();
 
-            // Assign multiple interviewers for panel interviews
-
-            foreach (var interviewerId in interviewerIds)
+            // Assign multiple interviewers
+            foreach (var interviewerId in model.InterviewerIds)
             {
                 _context.InterviewFeedbacks.Add(new InterviewFeedback
                 {
                     InterviewRoundID = interview.InterviewID,
-                    InterviewerID = interviewerId
+                    InterviewerID = interviewerId.ToString()
                 });
             }
 
             await _context.SaveChangesAsync();
 
-            await _notificationService.SendInterviewNotification(candidateId,
-                $"You have an interview scheduled on {interviewDate:dddd, MMM dd, yyyy hh:mm tt}");
+            // Send meeting invites
+            await _interviewService.SendMeetingInvites(model.CandidateId, model.InterviewerIds, model.InterviewDate);
 
-            // Send meeting invite
-            await  _interviewService.SendMeetingInvites(candidateId, interviewerIds, interviewDate);
-
-            return RedirectToAction("InterviewDetails", new { interviewId = interview.InterviewID });
+            TempData["SuccessMessage"] = "Interview scheduled successfully. Emails sent!";
+            return RedirectToAction("ManageInterviews");
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> BulkScheduleInterviews(List<String> candidateIds, int positionId, DateTime interviewDate)
+        public async Task<IActionResult> BulkScheduleInterviews(List<int> candidateIds, int positionId, DateTime interviewDate)
         {
             foreach (var candidateId in candidateIds)
             {

@@ -10,7 +10,7 @@ namespace RecruitmentProcessManagement.Models
         public int InterviewRoundID { get; set; }
         public string InterviewerID { get; set; }  // IdentityUser ID ()
         public string FeedbackText { get; set; }
-        public int Rating { get; set; }
+        public string Rating { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime CreatedDate { get; set; } = DateTime.Now;

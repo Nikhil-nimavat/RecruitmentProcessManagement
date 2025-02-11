@@ -19,7 +19,8 @@ namespace RecruitmentProcessManagement.Models
         [StringLength(1000, MinimumLength = 10, ErrorMessage = "Job Description should have atleast 10 characters.")]
         public string PreferredSkills { get; set; }
 
-        public string YearsOfExperience { get; set; }
+        [Range(0, 1000, ErrorMessage = "Years Of Experience can not be nagative.")]
+        public int YearsOfExperience { get; set; }
 
         [MaxLength(50)]
         public string Status { get; set; }
@@ -27,7 +28,7 @@ namespace RecruitmentProcessManagement.Models
 
         [DataType(DataType.Date)]
         public DateTime? PositionClosedDate { get; set; }
-        public string? LinkedCandidateID { get; set; }
+        public int? LinkedCandidateID { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime? CreatedDate { get; set; } = DateTime.Now;

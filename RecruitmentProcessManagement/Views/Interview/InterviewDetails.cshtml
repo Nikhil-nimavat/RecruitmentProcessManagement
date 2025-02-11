@@ -1,11 +1,32 @@
-﻿<form asp-action="RescheduleInterview" method="post">
-    <input type="hidden" name="interviewId" value="@Model.InterviewID" />
-    <label>New Date:</label>
-    <input type="datetime-local" name="newDate" class="form-control" required />
-    <button type="submit" class="btn btn-warning">Reschedule</button>
-</form>
+﻿@using RecruitmentProcessManagement.Models.ViewModels
+@model InterviewDetailsViewModel
+@{
+    ViewData["Title"] = "Interview Details";
+}
 
-<form asp-action="CancelInterview" method="post">
-    <input type="hidden" name="interviewId" value="@Model.InterviewID" />
-    <button type="submit" class="btn btn-danger">Cancel Interview</button>
-</form>
+<h2>Interview Details</h2>
+
+<div class="card">
+    <div class="card-body">
+        <h4>@Model.CandidateName</h4>
+        <p><strong>Position:</strong> @Model.PositionTitle</p>
+        <p><strong>Interview Type:</strong> @Model.InterviewType</p>
+        <p><strong>Date & Time:</strong> @Model.InterviewDate.ToString("f")</p>
+        <p><strong>Status:</strong> <span class="badge bg-@(Model.Status == "Completed" ? "success" : "warning")">@Model.Status</span></p>
+        <p><strong>Interviewers:</strong> @string.Join(", ", Model.Interviewers)</p>
+
+        @if (Model.Status == "Completed")
+        {
+            <h5>Feedback</h5>
+            <p>@Model.Feedback</p>
+        }
+
+        @if (User.IsInRole("Interviewer") && Model.Status == "Scheduled")
+        {
+            <a asp-action="GiveFeedback" asp-route-id="@Model.InterviewId" class="btn btn-primary">Submit Feedback</a>
+        }
+    </div>
+</div>
+
+
+<a asp-action="ManageInterviews" class="btn btn-secondary mt-3">Back to Interviews</a>

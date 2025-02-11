@@ -1,26 +1,45 @@
-﻿<h2>Schedule Interview</h2>
+﻿@model RecruitmentProcessManagement.Models.ViewModels.ScheduleInterviewViewModel
+@{
+    ViewData["Title"] = "Schedule Interview";
+}
+
+<h2>Schedule Interview</h2>
 
 <form asp-action="ScheduleInterview" method="post">
-    <input type="hidden" name="positionId" value="@ViewBag.PositionId" />
+    <div class="mb-3">
+        <label class="form-label">Candidate</label>
+        <select asp-for="CandidateId" asp-items="Model.Candidates" class="form-control" required>
+            <option value="">Select Candidate</option>
+        </select>
+    </div>
 
-    <label>Select Candidate:</label>
-    <select name="candidateId" class="form-control">
-        @foreach (var candidate in ViewBag.Candidates)
-        {
-            <option value="@candidate.CandidateID">@candidate.FullName</option>
-        }
-    </select>
+    <div class="mb-3">
+        <label class="form-label">Position</label>
+        <select asp-for="PositionId" asp-items="Model.Positions" class="form-control" required>
+            <option value="">Select Position</option>
+        </select>
+    </div>
 
-    <label>Select Interviewers (Panel Interview Supported):</label>
-    <select name="interviewerIds" class="form-control" multiple>
-        @foreach (var interviewer in ViewBag.Interviewers)
-        {
-            <option value="@interviewer.Id">@interviewer.FullName</option>
-        }
-    </select>
+    <div class="mb-3">
+        <label class="form-label">Interview Type</label>
+        <select asp-for="InterviewType" class="form-control" required>
+            <option value="Technical">Technical</option>
+            <option value="HR">HR</option>
+            <option value="Panel">Panel Interview</option>
+        </select>
+    </div>
 
-    <label>Select Interview Date:</label>
-    <input type="datetime-local" name="interviewDate" class="form-control" required />
+    <div class="mb-3">
+        <label class="form-label">Interview Date & Time</label>
+        <input type="datetime-local" asp-for="InterviewDate" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Assign Interviewers</label>
+        <select asp-for="InterviewerIds" asp-items="Model.Interviewers" class="form-control" multiple required>
+        </select>
+    </div>
 
     <button type="submit" class="btn btn-primary">Schedule Interview</button>
+    <a asp-action="ManageInterviews" class="btn btn-secondary">Cancel</a>
 </form>

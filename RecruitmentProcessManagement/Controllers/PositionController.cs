@@ -24,17 +24,17 @@ namespace RecruitmentProcessManagement.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IServiceProvider _serviceProvider;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly CandidateService _candidateService;
+        private readonly ICandidateService _candidateservice;
 
         public PositionController(IPositionService positionService,
             ApplicationDbContext context, IServiceProvider serviceProvider,
-            IWebHostEnvironment webHostEnvironment, CandidateService candidateService)
+            IWebHostEnvironment webHostEnvironment, ICandidateService candidateservice)
         {
             _positionService = positionService;
             _context = context;
             _serviceProvider = serviceProvider;
             _webHostEnvironment = webHostEnvironment;
-            _candidateService = candidateService;
+            _candidateservice = candidateservice;
         }
 
         [HttpGet]
@@ -102,11 +102,11 @@ namespace RecruitmentProcessManagement.Controllers
             return View(position);
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(Position position)
         {
-            await _positionService.DeletePositionAsync(id);
+            await _positionService.DeletePositionAsync(position.PositionID);
             return RedirectToAction(nameof(Index));
         }
 
@@ -128,6 +128,7 @@ namespace RecruitmentProcessManagement.Controllers
 
 
         // Updated one with logic Encaped
+
         [HttpPost]
         public async Task<IActionResult> ClosePosition(int id, string reasonForClosure, int? linkedCandidateId)
         {
@@ -143,60 +144,41 @@ namespace RecruitmentProcessManagement.Controllers
             }
         }
 
-        [HttpGet]
-        public IActionResult Apply(int positionId)
-        {
-            ViewBag.PositionId = positionId;
-            return View();
-        }
-
-        //[HttpPost]
-        //public async Task<IActionResult> Apply(Candidate candidate, IFormFile cvFile)
+        //[HttpGet]
+        //public IActionResult Apply(int positionId)
         //{
-        //    if (ModelState.IsValid && cvFile != null)
-        //    {
-        //        // Save CV (Resume) File
-        //        var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-        //        if (!Directory.Exists(uploadsFolder))
-        //        {
-        //            Directory.CreateDirectory(uploadsFolder);
-        //        }
-
-        //        var uniqueFileName = $"{Guid.NewGuid()}_{cvFile.FileName}";
-        //        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-        //        using (var fileStream = new FileStream(filePath, FileMode.Create))
-        //        {
-        //            await cvFile.CopyToAsync(fileStream);
-        //        }
-
-        //        candidate.ResumePath = "/uploads/" + uniqueFileName;
-
-        //        await _candidateService.AddCandidate(candidate);
-        //        return RedirectToAction("Index", "Position");
-        //    }
-
-        //    return View(candidate);
+        //    ViewBag.PositionId = positionId;
+        //    return View();
         //}
 
-        [HttpPost]
-        public async Task<IActionResult> Apply(Candidate candidate, IFormFile cvFile)
-        {
-            if (cvFile != null)
-            {
-                string extractedText = await ExtractTextFromCV(cvFile);
+        ////[HttpPost]
+        ////public async Task<IActionResult> Apply(Candidate candidate, IFormFile cvFile)
+        ////{
+        ////    if (ModelState.IsValid && cvFile != null)
+        ////    {
+        ////        // Save CV (Resume) File
+        ////        var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+        ////        if (!Directory.Exists(uploadsFolder))
+        ////        {
+        ////            Directory.CreateDirectory(uploadsFolder);
+        ////        }
 
-                candidate.ExtractedText = extractedText;
+        ////        var uniqueFileName = $"{Guid.NewGuid()}_{cvFile.FileName}";
+        ////        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                candidate.Name = ExtractDetail(extractedText, @"(?i)Name[:\s]+([^\n\r]+)");
-                candidate.Email = ExtractDetail(extractedText, @"(?i)[\w\.-]+@[\w\.-]+\.\w+");
-                candidate.PhoneNumber = ExtractDetail(extractedText, @"\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}");
+        ////        using (var fileStream = new FileStream(filePath, FileMode.Create))
+        ////        {
+        ////            await cvFile.CopyToAsync(fileStream);
+        ////        }
 
-                 TempData["ExtractedCandidate"] = JsonConvert.SerializeObject(candidate);
-            }
+        ////        candidate.ResumePath = "/uploads/" + uniqueFileName;
 
-            return RedirectToAction("ApplyWithData", new { positionId = ViewBag.PositionId });
-        }
+        ////        await _candidateService.AddCandidate(candidate);
+        ////        return RedirectToAction("Index", "Position");
+        ////    }
+
+        ////    return View(candidate);
+        ////}
 
         //[HttpPost]
         //public async Task<IActionResult> Apply(Candidate candidate, IFormFile cvFile)
@@ -205,32 +187,247 @@ namespace RecruitmentProcessManagement.Controllers
         //    {
         //        string extractedText = await ExtractTextFromCV(cvFile);
 
-        //        // Store extracted text in the candidate model
         //        candidate.ExtractedText = extractedText;
 
-        //        // Extract details using regex
-        //        candidate.FullName = ExtractDetail(extractedText, @"(?i)Name[:\s]+([^\n\r]+)");
+        //        candidate.Name = ExtractDetail(extractedText, @"(?i)Name[:\s]+([^\n\r]+)");
         //        candidate.Email = ExtractDetail(extractedText, @"(?i)[\w\.-]+@[\w\.-]+\.\w+");
         //        candidate.PhoneNumber = ExtractDetail(extractedText, @"\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}");
 
-        //        // Store candidate data in TempData for the next step
-        //        TempData["ExtractedCandidate"] = JsonConvert.SerializeObject(candidate);
+        //         TempData["ExtractedCandidate"] = JsonConvert.SerializeObject(candidate);
         //    }
 
         //    return RedirectToAction("ApplyWithData", new { positionId = ViewBag.PositionId });
         //}
 
+        ////[HttpPost]
+        ////public async Task<IActionResult> Apply(Candidate candidate, IFormFile cvFile)
+        ////{
+        ////    if (cvFile != null)
+        ////    {
+        ////        string extractedText = await ExtractTextFromCV(cvFile);
+
+        ////        // Store extracted text in the candidate model
+        ////        candidate.ExtractedText = extractedText;
+
+        ////        // Extract details using regex
+        ////        candidate.FullName = ExtractDetail(extractedText, @"(?i)Name[:\s]+([^\n\r]+)");
+        ////        candidate.Email = ExtractDetail(extractedText, @"(?i)[\w\.-]+@[\w\.-]+\.\w+");
+        ////        candidate.PhoneNumber = ExtractDetail(extractedText, @"\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}");
+
+        ////        // Store candidate data in TempData for the next step
+        ////        TempData["ExtractedCandidate"] = JsonConvert.SerializeObject(candidate);
+        ////    }
+
+        ////    return RedirectToAction("ApplyWithData", new { positionId = ViewBag.PositionId });
+        ////}
+
+        //[HttpGet]
+        //public IActionResult ApplyWithData(int positionId)
+        //{
+        //    ViewBag.PositionId = positionId;
+
+        //    var extractedCandidateJson = TempData["ExtractedCandidate"] as string;
+        //    var candidate = !string.IsNullOrEmpty(extractedCandidateJson)
+        //        ? JsonConvert.DeserializeObject<Candidate>(extractedCandidateJson)
+        //        : new Candidate { Name = "", Email = "", PhoneNumber = "" }; 
+
+        //    return View("Apply", candidate);
+        //}
+
+        //[HttpGet]
+        //public IActionResult Apply(int positionId)
+        //{
+        //    ViewBag.PositionId = positionId;
+        //    return View(new Candidate { Name = "", Email = "", PhoneNumber = ""});
+        //}
+
+        //[HttpPost]
+        //public async Task<IActionResult> Apply(Candidate candidate, IFormFile cvFile, int positionId)
+        //{
+        //    if (cvFile == null || cvFile.Length == 0)
+        //    {
+        //        TempData["ErrorMessage"] = "Please upload a valid CV file.";
+        //        return RedirectToAction("Apply", new { positionId });
+        //    }
+
+        //    var uploadsFolder = System.IO.Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+        //    if (!Directory.Exists(uploadsFolder))
+        //    {
+        //        Directory.CreateDirectory(uploadsFolder);
+        //    }
+
+        //    var uniqueFileName = $"{Guid.NewGuid()}_{cvFile.FileName}";
+        //    var filePath = System.IO.Path.Combine(uploadsFolder, uniqueFileName);
+
+        //    using (var fileStream = new FileStream(filePath, FileMode.Create))
+        //    {
+        //        await cvFile.CopyToAsync(fileStream);
+        //    }
+
+        //    candidate.ResumePath = "/uploads/" + uniqueFileName;
+
+        //    string extractedText = await ExtractTextFromCV(cvFile);
+
+        //    candidate.ExtractedText = extractedText;
+        //    candidate.Name = ExtractDetail(extractedText, @"(?i)Name[:\s]+([^\n\r]+)");
+        //    candidate.Email = ExtractDetail(extractedText, @"(?i)[\w\.-]+@[\w\.-]+\.\w+");
+        //    candidate.PhoneNumber = ExtractDetail(extractedText, @"\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}");
+
+        //    TempData["ExtractedCandidate"] = JsonConvert.SerializeObject(candidate);
+
+        //    return RedirectToAction("ApplyWithData", new { positionId });
+        //}
+
+        //[HttpGet]
+        //public IActionResult ApplyWithData(int positionId)
+        //{
+        //    ViewBag.PositionId = positionId;
+
+        //    var extractedCandidateJson = TempData["ExtractedCandidate"] as string;
+        //    var candidate = !string.IsNullOrEmpty(extractedCandidateJson)
+        //        ? JsonConvert.DeserializeObject<Candidate>(extractedCandidateJson)
+        //        : new Candidate { Name = "", Email = "", PhoneNumber = ""};
+
+        //    return View("Apply", candidate);
+        //}
+
+        //[HttpGet]
+        //public IActionResult Apply(int positionId)
+        //{
+        //    ViewBag.PositionId = positionId;
+
+        //    if (ViewData["ExtractedCandidate"] is Candidate extractedCandidate)
+        //    {
+        //        return View(extractedCandidate);
+        //    }
+
+        //    return View(new Candidate { Name = "", PhoneNumber = "", Email = ""});
+        //}
+
+        //[HttpPost]
+        //public async Task<IActionResult> UploadCV(int positionId, IFormFile cvFile)
+        //{
+        //    if (cvFile == null || cvFile.Length == 0)
+        //    {
+        //        TempData["ErrorMessage"] = "Please upload a valid CV file.";
+        //        return RedirectToAction("Apply", new { positionId });
+        //    }
+
+        //    var uploadsFolder = System.IO.Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+        //    if (!Directory.Exists(uploadsFolder))
+        //    {
+        //        Directory.CreateDirectory(uploadsFolder);
+        //    }
+
+        //    var uniqueFileName = $"{Guid.NewGuid()}_{cvFile.FileName}";
+        //    var filePath = System.IO.Path.Combine(uploadsFolder, uniqueFileName);
+
+        //    using (var fileStream = new FileStream(filePath, FileMode.Create))
+        //    {
+        //        await cvFile.CopyToAsync(fileStream);
+        //    }
+
+        //    string extractedText = await ExtractTextFromCV(cvFile);
+
+        //    var candidate = new Candidate
+        //    {
+        //        ResumePath = "/uploads/" + uniqueFileName,
+        //        ExtractedText = extractedText,
+        //        Name = ExtractDetail(extractedText, @"(?i)Name[:\s]+([^\n\r]+)"),
+        //        Email = ExtractDetail(extractedText, @"(?i)[\w\.-]+@[\w\.-]+\.\w+"),
+        //        PhoneNumber = ExtractDetail(extractedText, @"\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}")
+        //    };
+
+        //    ViewData["ExtractedCandidate"] = candidate;
+
+        //    return View("Apply", candidate); 
+        //}
+
+        //[HttpPost]
+        //public async Task<IActionResult> Apply(Candidate candidate, int positionId)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        await _candidateservice.AddCandidate(candidate);
+        //        TempData["SuccessMessage"] = "Application submitted successfully!";
+        //        return RedirectToAction("Apply", new { positionId });
+        //    }
+
+        //    return View(candidate); 
+        //}
+
         [HttpGet]
-        public IActionResult ApplyWithData(int positionId)
+        public IActionResult Apply(int positionId)
         {
             ViewBag.PositionId = positionId;
+            ViewBag.SuccessMessage = TempData["SuccessMessage"];
 
-            var extractedCandidateJson = TempData["ExtractedCandidate"] as string;
-            var candidate = !string.IsNullOrEmpty(extractedCandidateJson)
-                ? JsonConvert.DeserializeObject<Candidate>(extractedCandidateJson)
-                : new Candidate { Name = "", Email = "", PhoneNumber = "" }; 
+            if (ViewData["ExtractedCandidate"] is Candidate extractedCandidate)
+            {
+                return View(extractedCandidate);
+            }
+
+            return View(new Candidate { Name = "", Email = "", PhoneNumber = ""});
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadCV(int positionId, IFormFile cvFile)
+        {
+            if (cvFile == null || cvFile.Length == 0)
+            {
+                TempData["ErrorMessage"] = "Please upload a valid CV file.";
+                return RedirectToAction("Apply", new { positionId });
+            }
+
+            var uploadsFolder = System.IO.Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var uniqueFileName = $"{Guid.NewGuid()}_{cvFile.FileName}";
+            var filePath = System.IO.Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await cvFile.CopyToAsync(fileStream);
+            }
+
+            string extractedText = await ExtractTextFromCV(cvFile);
+
+            var candidate = new Candidate
+            {
+                ResumePath = "/uploads/" + uniqueFileName,
+                ExtractedText = extractedText,
+                Name = ExtractDetail(extractedText, @"(?i)Name[:\s]+([^\n\r]+)"),
+                Email = ExtractDetail(extractedText, @"(?i)[\w\.-]+@[\w\.-]+\.\w+"),
+                PhoneNumber = ExtractDetail(extractedText, @"\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}")
+            };
+
+            ViewData["ExtractedCandidate"] = candidate;
 
             return View("Apply", candidate);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Apply(Candidate candidate, int positionId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(candidate);
+            }
+
+            var existingCandidate = await _candidateservice.GetCandidateById(candidate.CandidateID);
+            if (existingCandidate != null)
+            {
+                TempData["ErrorMessage"] = "You have already applied for this position.";
+                return RedirectToAction("Apply", new { positionId });
+            }
+
+            await _candidateservice.AddCandidate(candidate);
+
+            TempData["SuccessMessage"] = "Application submitted successfully!";
+            return RedirectToAction("Apply", new { positionId });
         }
 
         private async Task<string> ExtractTextFromCV(IFormFile file)
@@ -284,6 +481,7 @@ namespace RecruitmentProcessManagement.Controllers
 
         private static string ExtractDetail(string text, string pattern)
         {
+            if (string.IsNullOrEmpty(text)) return "";
             var match = Regex.Match(text, pattern);
             return match.Success ? match.Groups[1].Value.Trim() : "";
         }

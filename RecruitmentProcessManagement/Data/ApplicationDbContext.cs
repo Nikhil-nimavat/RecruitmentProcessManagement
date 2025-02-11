@@ -89,7 +89,8 @@ namespace RecruitmentProcessManagement.Data
             modelBuilder.Entity<CandidateReview>()
                 .HasOne(cr => cr.Reviewer)
                 .WithMany()
-                .HasForeignKey(cr => cr.ReviewerID);
+                .HasForeignKey(cr => cr.ReviewerID)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Interview>()
                 .HasOne(i => i.Candidate)
@@ -102,15 +103,16 @@ namespace RecruitmentProcessManagement.Data
                 .HasForeignKey(i => i.PositionID);
 
             modelBuilder.Entity<DocumentVerification>()
-                .HasOne(dv => dv.Candidate)  
-                .WithMany(c => c.DocumentVerifications)  
-                .HasForeignKey(dv => dv.CandidateID)  
-                .OnDelete(DeleteBehavior.SetNull);  
+                .HasOne(dv => dv.Candidate)
+                .WithMany(c => c.DocumentVerifications)
+                .HasForeignKey(dv => dv.CandidateID)
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<DocumentVerification>()
-                .HasOne(dv => dv.VerifiedByUser)  
-                .WithMany()  
-                .HasForeignKey(dv => dv.VerifiedBy);  
+                .HasOne(dv => dv.VerifiedByUser)
+                .WithMany()
+                .HasForeignKey(dv => dv.VerifiedBy)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<CandidateStatusHistory>()
                 .HasOne(csh => csh.Candidate)
@@ -120,7 +122,8 @@ namespace RecruitmentProcessManagement.Data
             modelBuilder.Entity<CandidateStatusHistory>()
                 .HasOne(csh => csh.ChangedByUser)
                 .WithMany()
-                .HasForeignKey(csh => csh.ChangedBy);
+                .HasForeignKey(csh => csh.ChangedBy)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Event>()
                 .HasOne(e => e.EventOrganizer)
@@ -131,7 +134,14 @@ namespace RecruitmentProcessManagement.Data
             modelBuilder.Entity<Notification>()
                 .HasOne(n => n.User)
                 .WithMany()
-                .HasForeignKey(n => n.UserID);
+                .HasForeignKey(n => n.UserID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<InterviewFeedback>()
+                .HasOne(ifb => ifb.Interviewer)
+                .WithMany()
+                .HasForeignKey(ifb => ifb.InterviewerID)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Ensuring the AspNetUser ID for Identity is treated as a string
             modelBuilder.Entity<IdentityUser>().Property(u => u.Id).HasColumnType("nvarchar(450)");

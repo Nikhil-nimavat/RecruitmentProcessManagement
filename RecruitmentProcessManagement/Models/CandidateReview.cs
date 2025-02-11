@@ -7,7 +7,7 @@ namespace RecruitmentProcessManagement.Models
     {
         [Key]
         public int ReviewID { get; set; }
-        public string CandidateID { get; set; }
+        public int CandidateID { get; set; }
         public int PositionID { get; set; }
         public string ReviewerID { get; set; }  // IdentityUser ID ()
 

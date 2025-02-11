@@ -13,7 +13,7 @@ namespace RecruitmentProcessManagement.Models
         [DataType(DataType.Date)]
         public DateTime EventDate { get; set; }
         public string Location { get; set; } 
-        public string? EventOrganizerID { get; set; } 
+        public string? EventOrganizerID { get; set; } // Identity tabel refrerence
         public int TotalParticipants { get; set; } 
         public string EventStatus { get; set; }
 

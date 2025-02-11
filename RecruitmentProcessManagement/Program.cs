@@ -36,6 +36,8 @@ builder.Services.AddScoped<IPositionService, PositionService>();
 builder.Services.AddScoped<ICandidateService, CandidateService>();
 builder.Services.AddScoped<ICandidateRepository, CandidateRepository>();
 
+builder.Services.AddScoped<IEmailService, EmailService>();
+
 
 var app = builder.Build();
 

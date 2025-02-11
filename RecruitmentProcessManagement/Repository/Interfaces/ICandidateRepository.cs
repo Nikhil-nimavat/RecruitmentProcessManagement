@@ -7,7 +7,7 @@ namespace RecruitmentProcessManagement.Repository.Interfaces
     {
         //Task<IEnumerable<Candidate>> GetAllCandidatesAsync();
 
-        //Task<Candidate> GetCandidateById(int id);
+        Task<Candidate> GetCandidateById(int id);
 
         Task AddCandidate(Candidate candidate);
 

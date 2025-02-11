@@ -1,0 +1,22 @@
+﻿
+<h2>Upload Documents</h2>
+
+<form asp-controller="CandidateDocument" asp-action="Upload" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="candidateId" value="@Model.CandidateID" />
+
+    <div class="form-group">
+        <label>Document Type</label>
+        <select name="documentType" class="form-control">
+            <option value="Resume">Resume</option>
+            <option value="ID Proof">ID Proof</option>
+            <option value="Education Certificate">Education Certificate</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Upload Document</label>
+        <input type="file" name="documentFile" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Upload</button>
+</form>

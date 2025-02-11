@@ -6,8 +6,8 @@ using RecruitmentProcessManagement.Services.Intefaces;
 
 namespace RecruitmentProcessManagement.Controllers
 {
-    //[Route("api/[controller]")]
-    //[ApiController]
+    [Route("api/[controller]")]
+    [ApiController]
     public class CandidateReviewController : Controller
     {
         private readonly ICandidateReviewService _reviewService;
@@ -22,7 +22,7 @@ namespace RecruitmentProcessManagement.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var reviews = await _reviewService.GetCandidateScreeningHistory("1"); // Example CandidateID
+            var reviews = await _reviewService.GetCandidateScreeningHistory(1); // Example CandidateID
             return View(reviews);
         }
 
@@ -53,7 +53,7 @@ namespace RecruitmentProcessManagement.Controllers
         //}
 
         //Updated for the view alignment
-        public async Task<IActionResult> ReviewCandidate(string candidateId, int positionId)
+        public async Task<IActionResult> ReviewCandidate(int candidateId, int positionId)
         {
             var lastReview = await _context.CandidateReviews
                 .Where(r => r.CandidateID == candidateId)

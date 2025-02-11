@@ -15,21 +15,21 @@ namespace RecruitmentProcessManagement.Repository
         }
 
         // Assign a reviewer to a position
-        public async Task<bool> AssignReviewer(int positionId, string reviewerId)
+        public async Task<bool> AssignReviewer(int positionId, int reviewerId)
         {
             var position = await _context.Positions.FindAsync(positionId);
             if (position == null || position.Status == "Closed")
                 return false;
 
             var existingReview = await _context.CandidateReviews
-                .FirstOrDefaultAsync(r => r.PositionID == positionId && r.ReviewerID == reviewerId);
+                .FirstOrDefaultAsync(r => r.PositionID == positionId && r.ReviewerID == reviewerId.ToString());
 
             if (existingReview == null)
             {
                 var review = new CandidateReview
                 {
                     PositionID = positionId,
-                    ReviewerID = reviewerId,
+                    ReviewerID = reviewerId.ToString(),
                     ReviewDate = DateTime.Now,
                     Status = "Pending"
                 };
@@ -49,10 +49,10 @@ namespace RecruitmentProcessManagement.Repository
         }
 
         // Get an existing review
-        public async Task<CandidateReview> GetReview(string candidateId, int positionId, string reviewerId)
+        public async Task<CandidateReview> GetReview(int candidateId, int positionId, int reviewerId)
         {
             return await _context.CandidateReviews
-                .FirstOrDefaultAsync(r => r.CandidateID == candidateId && r.PositionID == positionId && r.ReviewerID == reviewerId);
+                .FirstOrDefaultAsync(r => r.CandidateID == candidateId && r.PositionID == positionId && r.ReviewerID == reviewerId.ToString());
         }
 
         // Submit a review
@@ -103,7 +103,7 @@ namespace RecruitmentProcessManagement.Repository
         }
 
         // Get screening history for a candidate
-        public async Task<List<CandidateReview>> GetCandidateScreeningHistory(string candidateId)
+        public async Task<List<CandidateReview>> GetCandidateScreeningHistory(int candidateId)
         {
             return await _context.CandidateReviews
                 .Where(r => r.CandidateID == candidateId)

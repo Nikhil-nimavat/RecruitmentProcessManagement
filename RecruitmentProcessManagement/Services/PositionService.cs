@@ -55,7 +55,7 @@ namespace RecruitmentProcessManagement.Services
             position.ReasonForClosure = reasonForClosure;
             position.PositionClosedDate = DateTime.Now;
 
-            if (linkedCandidateId.HasValue)
+            if (linkedCandidateId != null)
             {
                 position.LinkedCandidateID = linkedCandidateId;
             }

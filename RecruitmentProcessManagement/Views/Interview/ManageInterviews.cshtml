@@ -1,27 +1,63 @@
-﻿<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.js"></script>
+﻿@using RecruitmentProcessManagement.Models.ViewModels
+@model List<ManageInterviewsViewModel>
+@{
+    ViewData["Title"] = "Manage Interviews";
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
 
-<div id="calendar"></div>
+<h2>Manage Interviews</h2>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            events: '/Interview/GetScheduledInterviews', // Fetch scheduled interviews from API
-            dateClick: function (info) {
-                window.location.href = '/Interview/ScheduleInterview?date=' + info.dateStr;
-            }
-        });
-        calendar.render();
-    });
-</script>
+<form asp-action="ManageInterviews" method="get">
+    <div class="row mb-3">
+        <div class="col">
+            <input type="text" name="candidate" class="form-control" placeholder="Search Candidate" />
+        </div>
+        <div class="col">
+            <select name="status" class="form-control">
+                <option value="">Filter by Status</option>
+                <option value="Scheduled">Scheduled</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+        </div>
+        <div class="col">
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+    </div>
+</form>
 
-<script>
-    function loadBestInterviewers(positionId) {
-        $.get('/Interview/GetBestInterviewers?positionId=' + positionId, function (data) {
-            $('#interviewerDropdown').empty();
-            data.forEach(i => $('#interviewerDropdown').append(`<option value="${i.id}">${i.fullName}</option>`));
-        });
-    }
-</script>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Candidate</th>
+            <th>Position</th>
+            <th>Interview Date</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var interview in Model)
+        {
+            <tr>
+                <td>@interview.CandidateName</td>
+                <td>@interview.PositionTitle</td>
+                <td>@interview.InterviewDate.ToString("f")</td>
+                <td>@interview.InterviewType</td>
+                <td><span class="badge bg-@(interview.Status == "Completed" ? "success" : "warning")">@interview.Status</span></td>
+                <td>
+                    <a asp-action="InterviewDetails" asp-route-id="@interview.InterviewId" class="btn btn-info">View</a>
+                    @if (interview.Status == "Scheduled")
+                    {
+                        <a asp-action="ScheduleInterview" asp-route-id="@interview.InterviewId" class="btn btn-warning">Reschedule</a>
+                        <a asp-action="CancelInterview" asp-route-id="@interview.InterviewId" class="btn btn-danger">Cancel</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

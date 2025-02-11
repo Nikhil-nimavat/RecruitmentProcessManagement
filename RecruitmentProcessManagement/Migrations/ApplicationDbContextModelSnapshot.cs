@@ -588,6 +588,9 @@ namespace RecruitmentProcessManagement.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("InterviewerID")
+                        .HasColumnType("int");
+
                     b.Property<int>("PositionID")
                         .HasColumnType("int");
 
@@ -626,8 +629,9 @@ namespace RecruitmentProcessManagement.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
+                    b.Property<string>("Rating")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("FeedbackID");
 
@@ -721,8 +725,8 @@ namespace RecruitmentProcessManagement.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ExperienceYears")
-                        .HasColumnType("int");
+                    b.Property<string>("ExperienceYears")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -754,8 +758,8 @@ namespace RecruitmentProcessManagement.Migrations
                     b.Property<int>("SkillID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("YearsOfExperience")
-                        .HasColumnType("int");
+                    b.Property<string>("YearsOfExperience")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("InterviewerSkillID");
 
@@ -842,9 +846,8 @@ namespace RecruitmentProcessManagement.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("YearsOfExperience")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("YearsOfExperience")
+                        .HasColumnType("int");
 
                     b.HasKey("PositionID");
 
@@ -972,7 +975,7 @@ namespace RecruitmentProcessManagement.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Reviewer")
                         .WithMany()
                         .HasForeignKey("ReviewerID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Candidate");
@@ -1012,7 +1015,7 @@ namespace RecruitmentProcessManagement.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "ChangedByUser")
                         .WithMany()
                         .HasForeignKey("ChangedBy")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Candidate");
@@ -1030,7 +1033,7 @@ namespace RecruitmentProcessManagement.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "VerifiedByUser")
                         .WithMany()
                         .HasForeignKey("VerifiedBy")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Candidate");
@@ -1135,7 +1138,7 @@ namespace RecruitmentProcessManagement.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Interviewer")
                         .WithMany()
                         .HasForeignKey("InterviewerID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("InterviewRound");
@@ -1197,7 +1200,7 @@ namespace RecruitmentProcessManagement.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()
                         .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");

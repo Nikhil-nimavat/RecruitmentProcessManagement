@@ -13,31 +13,31 @@ namespace RecruitmentProcessManagement.Services
     {
         private readonly IInterviewService _interviewService;
         private readonly ApplicationDbContext _context;
+        private readonly IEmailService _emailService;
         public InterviewService(IInterviewService interviewService
-            ,ApplicationDbContext context)
+            ,ApplicationDbContext context,
+              IEmailService emailService)
         {
             _interviewService = interviewService;
             _context = context;
+            _emailService = emailService;
         }
 
-        // error code
+        public async Task<List<IdentityUser>> GetBestInterviewers(int positionId)
+        {
+            var positionSkills = await _context.PositionSkills
+                .Where(ps => ps.PositionID == positionId)
+                .Select(ps => ps.SkillID)
+                .ToListAsync();
 
-        //public async Task<List<Users>> GetBestInterviewers(int positionId)
-        //{
-        //    var positionSkills = await _context.PositionSkills
-        //        .Where(ps => ps.PositionID == positionId)
-        //        .Select(ps => ps.SkillID)
-        //        .ToListAsync();
+            var bestInterviewers = await _context.Users
+                .Where(u => _context.InterviewerSkills
+                .Any(interviewerSkill => interviewerSkill.InterviewerID.ToString() == u.Id && positionSkills.Contains(interviewerSkill.SkillID)))
+                .ToListAsync();
 
-        //    // Syntax error as "is." gives nothing
-        //    var bestInterviewers = await _context.Users
-        //        .Where(u => _context.InterviewerSkills
-        //        .Any(is => is.InterviewerID == u.Id && positionSkills.Contains(is.SkillID)))
-        //        .ToListAsync();
-
-        //    return bestInterviewers;
-        //}
-        public async Task<bool> AssignInterviewers(string candidateId, int positionId)
+            return bestInterviewers;
+        }
+        public async Task<bool> AssignInterviewers(int candidateId, int positionId)
         {
             var interview = await _context.Interviews
                 .FirstOrDefaultAsync(i => i.CandidateID == candidateId && i.PositionID == positionId);
@@ -54,7 +54,7 @@ namespace RecruitmentProcessManagement.Services
                 _context.Interviews.Add(new Interview
                 {
                     InterviewID = interview.InterviewID,
-                    InterviewerID = interviewer.Id
+                    InterviewerID = Convert.ToInt32(interviewer.Id) 
                 });
             }
 
@@ -62,27 +62,31 @@ namespace RecruitmentProcessManagement.Services
             return true;
         }
 
-        public async Task SendMeetingInvites(string candidateId, List<string> interviewerIds, DateTime interviewDate)
+        public async Task SendMeetingInvites(int candidateId, List<string> interviewerIds, DateTime interviewDate)
         {
             var candidate = await _context.Candidates.FindAsync(candidateId);
+
+            var stringInterviewerIds = interviewerIds.Select(id => id.ToString()).ToList();
+
             var interviewers = await _context.Users
-                .Where(u => interviewerIds.Contains(u.Id))
+                .Where(u => stringInterviewerIds.Contains(u.Id))
                 .ToListAsync();
+
+            if (candidate == null || !interviewers.Any())
+            {
+                throw new Exception("Invalid candidate or interviewers.");
+            }
 
             string subject = "Interview Scheduled - " + interviewDate.ToString("yyyy-MM-dd HH:mm");
             string body = $"Dear {candidate.Name},\n\nYou have an interview scheduled on {interviewDate}. \nPlease be prepared.\n\nBest regards,\nHR Team";
 
+            await _emailService.SendEmailAsync(candidate.Email, subject, body);
 
-            // After configuring email service
-            // Send invite to candidate
-
-            // await _emailService.SendEmailAsync(candidate.Email, subject, body);
-
-            //// Send invite to interviewers
-            //foreach (var interviewer in interviewers)
-            //{
-            //    await _emailService.SendEmailAsync(interviewer.Email, subject, "You are assigned to interview " + candidate.Name);
-            //}
+            foreach (var interviewer in interviewers)
+            {
+                string interviewerBody = $"Dear {interviewer.UserName},\n\nYou are assigned to interview {candidate.Name} on {interviewDate}.\n\nBest regards,\nHR Team";
+                await _emailService.SendEmailAsync(interviewer.Email, subject, interviewerBody);
+            }
         }
     }
 }

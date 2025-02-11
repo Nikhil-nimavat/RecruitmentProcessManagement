@@ -13,17 +13,18 @@ namespace RecruitmentProcessManagement.Repository
         {
             _context = context;
         }
+
         //public async Task<IEnumerable<Candidate>> GetAllCandidatesAsync()
         //{
         //    List<Candidate> candidates = await _context.Candidates.ToListAsync();
         //    return candidates;
         //}
 
-        //public async Task<Candidate> GetCandidateById(int id)
-        //{
-        //    var candidate = await _context.Candidates.FindAsync(id);
-        //    return candidate;
-        //}
+        public async Task<Candidate> GetCandidateById(int id)
+        {
+            var candidate = await _context.Candidates.FindAsync(id);
+            return candidate;
+        }
         public async Task AddCandidate(Candidate candidate)
         {
             await _context.Candidates.AddAsync(candidate);

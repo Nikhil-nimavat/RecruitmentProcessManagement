@@ -17,7 +17,7 @@ namespace RecruitmentProcessManagement.Services
             _context = context;
         }
 
-        public async Task<bool> AssignReviewer(int positionId, string reviewerId)
+        public async Task<bool> AssignReviewer(int positionId, int reviewerId)
         {
             return await _reviewRepository.AssignReviewer(positionId, reviewerId);
         }
@@ -27,15 +27,15 @@ namespace RecruitmentProcessManagement.Services
             return await _reviewRepository.GetCandidatesForReview(positionId);
         }
 
-        public async Task<bool> SubmitReview(string candidateId, int positionId,
-            string reviewerId, string comments,
+        public async Task<bool> SubmitReview(int candidateId, int positionId,
+            int reviewerId, string comments,
             string status, List<CandidateSkill> candidateSkills)
         {
             var review = new CandidateReview
             {
                 CandidateID = candidateId,
                 PositionID = positionId,
-                ReviewerID = reviewerId,
+                ReviewerID = reviewerId.ToString(),
                 Comments = comments,
                 Status = status,
                 ReviewDate = DateTime.Now
@@ -52,21 +52,21 @@ namespace RecruitmentProcessManagement.Services
             return true;
         }
 
-        public async Task MoveCandidateToInterviewStage(string candidateId, int positionId)
+        public async Task MoveCandidateToInterviewStage(int candidateId, int positionId)
         {
             var interview = new Interview
             {
                 CandidateID = candidateId,
                 PositionID = positionId,
                 InterviewDate = DateTime.Now.AddDays(2),
-                InterviewerID = "1" 
+                InterviewerID = 1
             };
 
             _context.Interviews.Add(interview);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<CandidateReview>> GetCandidateScreeningHistory(string candidateId)
+        public async Task<List<CandidateReview>> GetCandidateScreeningHistory(int candidateId)
         {
             return await _reviewRepository.GetCandidateScreeningHistory(candidateId);
         }

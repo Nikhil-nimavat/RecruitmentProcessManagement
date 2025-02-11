@@ -7,7 +7,7 @@ namespace RecruitmentProcessManagement.Models
         public int SkillID { get; set; }
 
         [Required(ErrorMessage = "Please enter years of experience.")]
-        [Range(0, 50, ErrorMessage = "Years of experience must be between 0 and 50.")]
+        [Range(0, 50, ErrorMessage = "Years of experience must be between 0 and 20.")]
         public int YearsOfExperience { get; set; }
     }
 }
