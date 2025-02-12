@@ -15,7 +15,7 @@
             <th>Job Title</th>
             <th>Required Skills</th>
             <th>Preferred Skills</th>
-            <th>Experience Needed</th> 
+            <th>Experience (In Years)</th> 
             <th>Status</th>
             <th>Actions</th>
         </tr>
@@ -30,17 +30,20 @@
                 <td>@position.YearsOfExperience</td>
                 <td>@position.Status</td>
                 <td>
-                    <a href="@Url.Action("Edit", new { id = position.PositionID })" class="btn btn-warning btn-sm">Edit</a>
-                    <a href="@Url.Action("Delete", new { id = position.PositionID })" class="btn btn-danger btn-sm">Delete</a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a href="@Url.Action("Edit", new { id = position.PositionID })" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="@Url.Action("Delete", new { id = position.PositionID })" class="btn btn-danger btn-sm">Delete</a>
+                        @if (position.Status != "Closed")
+                        {
+                            <button class="btn btn-danger" onclick="openCloseModal(@position.PositionID)">Close</button>
+                        }
+                    }
                     <a asp-controller="Position" asp-action="Apply" asp-route-positionId="@position.PositionID" class="btn btn-success">
                         Apply
                     </a>
 
-                    <button class="btn btn-info" onclick="toggleDetails(@position.PositionID)">Expand</button>
-                    @if (position.Status != "Closed")
-                    {
-                        <button class="btn btn-danger" onclick="openCloseModal(@position.PositionID)">Close</button>
-                    }
+                    <button class="btn btn-info" onclick="toggleDetails(@position.PositionID)">View Details</button>
                 </td>
             </tr>
             <tr id="details-@position.PositionID" style="display: none;">
@@ -75,7 +78,7 @@
                             <option value="">None</option>
                             @foreach (var candidate in ViewBag.Candidates)
                             {
-                                <option value="@candidate.CandidateID">@candidate.FullName</option>
+                                <option value="@candidate.CandidateID">@candidate.Name</option>
                             }
                         </select>
                     </div>

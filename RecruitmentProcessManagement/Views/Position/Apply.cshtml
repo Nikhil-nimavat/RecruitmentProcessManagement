@@ -2,43 +2,43 @@
 
 <h2>Apply for Position</h2>
 
-<form asp-controller="Position" asp-action="UploadCV" method="post" enctype="multipart/form-data">
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<form asp-controller="Position" asp-action="Apply" method="post" enctype="multipart/form-data">
     <input type="hidden" name="positionId" value="@ViewBag.PositionId" />
 
     <div class="form-group">
         <label for="cvFile">Upload CV (PDF, DOC, TXT)</label>
-        <input type="file" name="cvFile" class="form-control" accept=".pdf,.doc,.docx,.txt" />
+        <input type="file" name="cvFile" class="form-control" accept=".pdf,.doc,.docx,.txt" required />
     </div>
 
-    <button type="submit" class="btn btn-primary">CV Data</button>
-</form>
-
-@if (!string.IsNullOrEmpty(Model.ExtractedText))
-{
-    <div class="alert alert-info">
-        <strong>Extracted CV Data:</strong>
-        <pre>@Model.ExtractedText</pre>
-    </div>
-}
-
-<form asp-controller="Position" asp-action="Apply" method="post">
     <div asp-validation-summary="All" class="text-danger"></div>
-    <input type="hidden" name="positionId" value="@ViewBag.PositionId" />
-    <input type="hidden" asp-for="ResumePath" />
 
     <div class="form-group">
         <label asp-for="Name">Full Name</label>
-        <input asp-for="Name" class="form-control" />
+        <input asp-for="Name" class="form-control" required />
     </div>
 
     <div class="form-group">
         <label asp-for="Email">Email</label>
-        <input asp-for="Email" type="email" class="form-control" />
+        <input asp-for="Email" type="email" class="form-control" required />
     </div>
 
     <div class="form-group">
         <label asp-for="PhoneNumber">Phone Number</label>
-        <input asp-for="PhoneNumber" class="form-control" />
+        <input asp-for="PhoneNumber" class="form-control" required />
     </div>
 
     <button type="submit" class="btn btn-success">Submit Application</button>

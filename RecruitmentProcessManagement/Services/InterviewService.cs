@@ -11,14 +11,12 @@ namespace RecruitmentProcessManagement.Services
 {
     public class InterviewService : IInterviewService
     {
-        private readonly IInterviewService _interviewService;
         private readonly ApplicationDbContext _context;
         private readonly IEmailService _emailService;
-        public InterviewService(IInterviewService interviewService
-            ,ApplicationDbContext context,
+        public InterviewService(
+            ApplicationDbContext context,
               IEmailService emailService)
         {
-            _interviewService = interviewService;
             _context = context;
             _emailService = emailService;
         }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RecruitmentProcessManagement.Services.Intefaces;
 
 namespace RecruitmentProcessManagement.Controllers
@@ -13,6 +14,7 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Verify(int candidateId, string status)
         {
             await _documentVerificationService.VerifyCandidateDocuments(candidateId, status, User.Identity.Name);

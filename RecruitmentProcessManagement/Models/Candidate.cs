@@ -6,14 +6,16 @@ namespace RecruitmentProcessManagement.Models
     {
         [Key]
         public int CandidateID { get; set; }
-        public required string Name { get; set; }
+
+        [Required]
+        public string Name { get; set; }
 
         [EmailAddress]
         public string Email { get; set; }
 
         [Phone]
         public string PhoneNumber { get; set; }
-        public string ResumePath { get; set; }
+        public string? ResumePath { get; set; }
 
         [MaxLength(50)]
         public string? ProfileStatus { get; set; }
@@ -26,13 +28,13 @@ namespace RecruitmentProcessManagement.Models
         [DataType(DataType.Date)]
         public DateTime? ModifiedDate { get; set; }
 
-        // Navigation Property...
-        public ICollection<CandidateSkill> CandidateSkills { get; set; }
-        public ICollection<CandidateDocument> CandidateDocuments { get; set; }
-        public ICollection<CandidateReview> CandidateReviews { get; set; }
-        public ICollection<Interview> Interviews { get; set; }
-        public ICollection<FinalSelection> FinalSelections { get; set; }
-        public ICollection<CandidateStatusHistory> CandidateStatusHistories { get; set; }
-        public ICollection<DocumentVerification> DocumentVerifications { get; set; }
+        // Nav Property
+        public ICollection<CandidateSkill> CandidateSkills { get; set; } = new List<CandidateSkill>();
+        public ICollection<CandidateDocument> CandidateDocuments { get; set; } = new List<CandidateDocument>();
+        public ICollection<CandidateReview> CandidateReviews { get; set; } = new List<CandidateReview>();
+        public ICollection<Interview> Interviews { get; set; } = new List<Interview>();
+        public ICollection<FinalSelection> FinalSelections { get; set; } = new List<FinalSelection>();
+        public ICollection<CandidateStatusHistory> CandidateStatusHistories { get; set; } = new List<CandidateStatusHistory>();
+        public ICollection<DocumentVerification> DocumentVerifications { get; set; } = new List<DocumentVerification>();
     }
 }

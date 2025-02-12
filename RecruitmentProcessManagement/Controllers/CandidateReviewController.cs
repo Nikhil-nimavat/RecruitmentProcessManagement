@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RecruitmentProcessManagement.Data;
 using RecruitmentProcessManagement.Models;
@@ -6,8 +7,8 @@ using RecruitmentProcessManagement.Services.Intefaces;
 
 namespace RecruitmentProcessManagement.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    //[Route("api/[controller]")]
+    //[ApiController]
     public class CandidateReviewController : Controller
     {
         private readonly ICandidateReviewService _reviewService;
@@ -20,12 +21,23 @@ namespace RecruitmentProcessManagement.Controllers
             _context = context;
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var reviews = await _reviewService.GetCandidateScreeningHistory(1); // Example CandidateID
             return View(reviews);
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public IActionResult ReviewCandidate()
+        {
+            return View();
+        }
+
+
+        // Static code for intial testing only
         //public async Task<IActionResult> ReviewCandidate(int candidateId, int positionId)
         //{
         //    var candidates = await _reviewService.GetCandidatesForReview(positionId);
@@ -52,7 +64,8 @@ namespace RecruitmentProcessManagement.Controllers
         //    return View(viewModel);
         //}
 
-        //Updated for the view alignment
+        //Updated for the view alignment and encp logic
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ReviewCandidate(int candidateId, int positionId)
         {
             var lastReview = await _context.CandidateReviews
@@ -69,6 +82,7 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> SubmitReview(CandidateReviewViewModel model)
         {
             if (!ModelState.IsValid)
@@ -98,5 +112,4 @@ namespace RecruitmentProcessManagement.Controllers
             return RedirectToAction("Index");
         }
     }
-
 }

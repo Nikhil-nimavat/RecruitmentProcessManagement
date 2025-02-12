@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RecruitmentProcessManagement.Models;
 using RecruitmentProcessManagement.Services.Intefaces;
 
@@ -15,7 +16,21 @@ namespace RecruitmentProcessManagement.Controllers
             _candidateDocumentService = candidateDocumentService;
         }
 
+        [HttpGet]
+        public IActionResult CandidateDashboard()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public IActionResult HRDashboard()
+        {
+            return View();
+        }
+
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Upload(int candidateId, IFormFile documentFile, string documentType)
         {
             if (documentFile == null || documentFile.Length == 0)

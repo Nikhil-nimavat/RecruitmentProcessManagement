@@ -30,14 +30,19 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(
 
 
 // Add DI Services.
-builder.Services.AddScoped<IPositionRepository, PositionRepository>();
 builder.Services.AddScoped<IPositionService, PositionService>();
-
+builder.Services.AddScoped<IPositionRepository, PositionRepository>();
 builder.Services.AddScoped<ICandidateService, CandidateService>();
 builder.Services.AddScoped<ICandidateRepository, CandidateRepository>();
-
+builder.Services.AddScoped<ICandidateReviewService, CandidateReviewService>();
+builder.Services.AddScoped<ICandidateReviewRepository,CandidateReviewRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
-
+builder.Services.AddScoped<IBulkHiringService, BulkHiringService>();
+builder.Services.AddScoped<ICandidateDocumentService, CandidateDocumentService>();
+builder.Services.AddScoped<IDocumentVerificationService, DocumentVerificationService>();
+builder.Services.AddScoped<IFinalSelectionService, FinalSelectionService>();
+builder.Services.AddScoped<IInterviewService, InterviewService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 var app = builder.Build();
 

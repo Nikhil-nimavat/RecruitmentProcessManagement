@@ -1,0 +1,41 @@
+﻿@model RecruitmentProcessManagement.Models.Interviewer
+
+@{
+    ViewData["Title"] = "Interviewer Details";
+}
+
+<h2>Interviewer Details</h2>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Full Name</th>
+        <td>@Model.FullName</td>
+    </tr>
+    <tr>
+        <th>Email</th>
+        <td>@Model.Email</td>
+    </tr>
+    <tr>
+        <th>Phone Number</th>
+        <td>@Model.PhoneNumber</td>
+    </tr>
+    <tr>
+        <th>Designation</th>
+        <td>@Model.Designation</td>
+    </tr>
+    <tr>
+        <th>Experience Years</th>
+        <td>@Model.ExperienceYears</td>
+    </tr>
+    <tr>
+        <th>Created Date</th>
+        <td>@Model.CreatedDate.ToString("yyyy-MM-dd")</td>
+    </tr>
+    <tr>
+        <th>Modified Date</th>
+        <td>@(Model.ModifiedDate.HasValue ? Model.ModifiedDate.Value.ToString("yyyy-MM-dd HH:mm") : "N/A")</td>
+    </tr>
+</table>
+
+<a asp-action="Edit" asp-route-id="@Model.InterviewerID" class="btn btn-warning">Edit</a>
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>

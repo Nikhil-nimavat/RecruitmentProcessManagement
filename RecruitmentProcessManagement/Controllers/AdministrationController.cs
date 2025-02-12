@@ -16,12 +16,15 @@ namespace RecruitmentProcessManagement.Controllers
             _roleManager = roleManager;
             _userManager = userManager;
         }
+
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult CreateRole()
         {
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateRole(CreateRoleViewModel roleModel)
         {
@@ -63,6 +66,7 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditRole(string roleId)
         {
             IdentityRole role = await _roleManager.FindByIdAsync(roleId);
@@ -90,6 +94,7 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditRole(EditRoleViewModel model)
         {
             if (ModelState.IsValid)
@@ -123,6 +128,7 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteRole(string roleId)
         {
             var role = await _roleManager.FindByIdAsync(roleId);
@@ -147,6 +153,7 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditUsersInRole(string roleId)
         {
             ViewBag.roleId = roleId;
@@ -186,6 +193,7 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditUsersInRole(List<UserRoleViewModel> model, string roleId)
         {
             var role = await _roleManager.FindByIdAsync(roleId);
@@ -235,6 +243,7 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditUser(string UserId)
         {
             var user = await _userManager.FindByIdAsync(UserId);
@@ -257,6 +266,7 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditUser(EditUserViewModel model)
         {
             var user = await _userManager.FindByIdAsync(model.Id);
@@ -289,6 +299,7 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUser(string UserId)
         {
             var user = await _userManager.FindByIdAsync(UserId);
@@ -319,6 +330,7 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ManageUserRoles(string UserId)
         {
             var user = await _userManager.FindByIdAsync(UserId);
@@ -358,6 +370,7 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ManageUserRoles(List<UserRolesViewModel> model, string UserId)
         {
             var user = await _userManager.FindByIdAsync(UserId);
