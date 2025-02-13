@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 // SQL Server Connection
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+builder.Services.AddDbContext<RecruitmentProcessManagement.Data.ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConncetion")));
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(
@@ -32,17 +32,34 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(
 // Add DI Services.
 builder.Services.AddScoped<IPositionService, PositionService>();
 builder.Services.AddScoped<IPositionRepository, PositionRepository>();
+
 builder.Services.AddScoped<ICandidateService, CandidateService>();
 builder.Services.AddScoped<ICandidateRepository, CandidateRepository>();
+
 builder.Services.AddScoped<ICandidateReviewService, CandidateReviewService>();
 builder.Services.AddScoped<ICandidateReviewRepository,CandidateReviewRepository>();
-builder.Services.AddScoped<IEmailService, EmailService>();
+
+builder.Services.AddScoped<IInterviewerService, InterviewerService>();
+builder.Services.AddScoped<IInterviewerRepository, InterviewerRepository>();
+
 builder.Services.AddScoped<IBulkHiringService, BulkHiringService>();
+builder.Services.AddScoped<IBulkHiringRepository, BulkHiringRepository>();
+
 builder.Services.AddScoped<ICandidateDocumentService, CandidateDocumentService>();
+builder.Services.AddScoped<ICandidateDocumentRepository, CandidateDocumentRepository>();
+
 builder.Services.AddScoped<IDocumentVerificationService, DocumentVerificationService>();
+builder.Services.AddScoped<IDocumentVerificationRepository, DocumentVerificationRepository>();
+
 builder.Services.AddScoped<IFinalSelectionService, FinalSelectionService>();
+builder.Services.AddScoped<IFinalSelectionRepository, FinalSelectionRepository>();
+
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IInterviewService, InterviewService>();
+
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+
 
 var app = builder.Build();
 

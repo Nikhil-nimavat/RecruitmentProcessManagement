@@ -9,9 +9,9 @@ namespace RecruitmentProcessManagement.Services
     public class CandidateReviewService : ICandidateReviewService
     {
         private readonly ICandidateReviewRepository _reviewRepository;
-        private readonly ApplicationDbContext _context;
+        private readonly Data.ApplicationDbContext _context;
 
-        public CandidateReviewService(ICandidateReviewRepository reviewRepository, ApplicationDbContext context)
+        public CandidateReviewService(ICandidateReviewRepository reviewRepository, Data.ApplicationDbContext context)
         {
             _reviewRepository = reviewRepository;
             _context = context;
@@ -66,9 +66,9 @@ namespace RecruitmentProcessManagement.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<CandidateReview>> GetCandidateScreeningHistory(int candidateId)
+        public async Task<List<CandidateReview>> GetCandidateScreeningHistory()
         {
-            return await _reviewRepository.GetCandidateScreeningHistory(candidateId);
+            return await _reviewRepository.GetCandidateScreeningHistory();
         }
 
     }

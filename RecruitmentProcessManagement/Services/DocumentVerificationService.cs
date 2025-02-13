@@ -1,29 +1,21 @@
 ﻿using RecruitmentProcessManagement.Data;
 using RecruitmentProcessManagement.Models;
+using RecruitmentProcessManagement.Repository.Interfaces;
 using RecruitmentProcessManagement.Services.Intefaces;
 
 namespace RecruitmentProcessManagement.Services
 {
     public class DocumentVerificationService : IDocumentVerificationService
     {
-        private readonly ApplicationDbContext _context;
-        public DocumentVerificationService(ApplicationDbContext context) 
+        private readonly IDocumentVerificationRepository _repository;
+        public DocumentVerificationService(IDocumentVerificationRepository repository) 
         {
-            _context = context;
+            _repository = repository;
         }
 
         public async Task VerifyCandidateDocuments(int candidateId, string status, string verifiedBy)
         {
-            var verification = new DocumentVerification
-            {
-                CandidateID = candidateId,
-                VerificationStatus = status,
-                VerificationDate = DateTime.Now,
-                VerifiedBy = verifiedBy
-            };
-
-            await _context.DocumentVerifications.AddAsync(verification);
-            await _context.SaveChangesAsync();
+            await _repository.VerifyCandidateDocuments(candidateId, status, verifiedBy);    
         }
     }
 }

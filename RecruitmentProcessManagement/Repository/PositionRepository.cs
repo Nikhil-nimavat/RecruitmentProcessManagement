@@ -9,9 +9,9 @@ namespace RecruitmentProcessManagement.Repository
 {
     public class PositionRepository : IPositionRepository
     {
-        private readonly ApplicationDbContext _context;
+        private readonly Data.ApplicationDbContext _context;
 
-        public PositionRepository(ApplicationDbContext context)
+        public PositionRepository(Data.ApplicationDbContext context)
         {
             _context = context;
         }
@@ -20,12 +20,11 @@ namespace RecruitmentProcessManagement.Repository
         {
             List<Position> positions = await _context.Positions.ToListAsync();
             return positions;
-
         }
 
         public async Task<Position> GetPositionByIdAsync(int id)
         {
-            var position =  await _context.Positions.FindAsync(id);
+            var position = await _context.Positions.FindAsync(id);
             return position;
         }
 
@@ -50,5 +49,23 @@ namespace RecruitmentProcessManagement.Repository
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task ClosePositionAsync(int positionId, string reasonForClosure, int? linkedCandidateId)
+        {
+            var position = await _context.Positions.FindAsync(positionId);
+            if (position == null) throw new Exception("Position not found");
+
+            position.Status = "Closed";
+            position.ReasonForClosure = reasonForClosure;
+            position.PositionClosedDate = DateTime.Now;
+
+            if (linkedCandidateId != null)
+            {
+                position.LinkedCandidateID = linkedCandidateId;
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+
     }
 }

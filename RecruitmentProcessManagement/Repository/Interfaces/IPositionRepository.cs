@@ -11,5 +11,6 @@ namespace RecruitmentProcessManagement.Repository.Interfaces
         Task AddPositionAsync(Position position);
         Task UpdatePositionAsync(Position position);
         Task DeletePositionAsync(int id);
+        Task ClosePositionAsync(int positionId, string reasonForClosure, int? linkedCandidateId);
     }
 }

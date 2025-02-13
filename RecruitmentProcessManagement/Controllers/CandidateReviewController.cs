@@ -25,9 +25,19 @@ namespace RecruitmentProcessManagement.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
-            var reviews = await _reviewService.GetCandidateScreeningHistory(1); // Example CandidateID
-            return View(reviews);
+            var reviews = await _reviewService.GetCandidateScreeningHistory();
+
+            var reviewViewModels = reviews.Select(r => new CandidateReviewViewModel
+            {
+                CandidateID = r.CandidateID,
+                PositionID = r.PositionID,
+                Status = r.Status,
+                ReviewDate = r.ReviewDate
+            }).ToList();
+
+            return View(reviewViewModels);
         }
+
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
@@ -35,7 +45,6 @@ namespace RecruitmentProcessManagement.Controllers
         {
             return View();
         }
-
 
         // Static code for intial testing only
         //public async Task<IActionResult> ReviewCandidate(int candidateId, int positionId)
@@ -65,6 +74,7 @@ namespace RecruitmentProcessManagement.Controllers
         //}
 
         //Updated for the view alignment and encp logic
+
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ReviewCandidate(int candidateId, int positionId)
         {
@@ -78,7 +88,20 @@ namespace RecruitmentProcessManagement.Controllers
                 ViewBag.PreviousScreeningDate = lastReview.ReviewDate.ToString("yyyy-MM-dd");
             }
 
-            return View(new CandidateReviewViewModel { CandidateID = candidateId, PositionID = positionId });
+            var skills = await _context.Skills.ToListAsync();
+
+            var viewModel = new CandidateReviewViewModel
+            {
+                CandidateID = candidateId,
+                PositionID = positionId,
+                CandidateSkills = skills.Select(s => new CandidateSkillViewModel
+                {
+                    SkillID = s.SkillID,
+                    YearsOfExperience = 0
+                }).ToList()
+            };
+
+            return View(viewModel);
         }
 
         [HttpPost]

@@ -7,14 +7,13 @@ namespace RecruitmentProcessManagement.Repository
 {
     public class CandidateReviewRepository : ICandidateReviewRepository
     {
-        private readonly ApplicationDbContext _context;
+        private readonly Data.ApplicationDbContext _context;
 
-        public CandidateReviewRepository(ApplicationDbContext context)
+        public CandidateReviewRepository(Data.ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // Assign a reviewer to a position
         public async Task<bool> AssignReviewer(int positionId, int reviewerId)
         {
             var position = await _context.Positions.FindAsync(positionId);
@@ -39,8 +38,6 @@ namespace RecruitmentProcessManagement.Repository
             }
             return true;
         }
-
-        // Get candidates assigned for review
         public async Task<List<Candidate>> GetCandidatesForReview(int positionId)
         {
             return await _context.Candidates
@@ -48,14 +45,12 @@ namespace RecruitmentProcessManagement.Repository
                 .ToListAsync();
         }
 
-        // Get an existing review
         public async Task<CandidateReview> GetReview(int candidateId, int positionId, int reviewerId)
         {
             return await _context.CandidateReviews
                 .FirstOrDefaultAsync(r => r.CandidateID == candidateId && r.PositionID == positionId && r.ReviewerID == reviewerId.ToString());
         }
 
-        // Submit a review
         public async Task<bool> SubmitReview(CandidateReview review, Candidate candidate, List<CandidateSkill> skills)
         {
             if (review == null || candidate == null)
@@ -102,13 +97,9 @@ namespace RecruitmentProcessManagement.Repository
             return true;
         }
 
-        // Get screening history for a candidate
-        public async Task<List<CandidateReview>> GetCandidateScreeningHistory(int candidateId)
+        public async Task<List<CandidateReview>> GetCandidateScreeningHistory()
         {
-            return await _context.CandidateReviews
-                .Where(r => r.CandidateID == candidateId)
-                .OrderByDescending(r => r.ReviewDate)
-                .ToListAsync();
+            return await _context.CandidateReviews.ToListAsync();
         }
     }
 }

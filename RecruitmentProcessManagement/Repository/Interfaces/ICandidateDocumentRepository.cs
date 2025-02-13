@@ -1,10 +1,11 @@
 ﻿using RecruitmentProcessManagement.Models;
 
-namespace RecruitmentProcessManagement.Services.Intefaces
+namespace RecruitmentProcessManagement.Repository.Interfaces
 {
-    public interface ICandidateDocumentService
+    public interface ICandidateDocumentRepository
     {
         Task AddDocument(CandidateDocument document);
+
         Task<Candidate> GetCandidateById(int id);
     }
 }

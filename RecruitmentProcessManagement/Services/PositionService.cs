@@ -1,66 +1,48 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RecruitmentProcessManagement.Data;
 using RecruitmentProcessManagement.Models;
+using RecruitmentProcessManagement.Repository;
+using RecruitmentProcessManagement.Repository.Interfaces;
 using RecruitmentProcessManagement.Services.Intefaces;
 
 namespace RecruitmentProcessManagement.Services
 {
     public class PositionService : IPositionService
     {
-        private readonly ApplicationDbContext _context;
-        public PositionService(ApplicationDbContext context)
+        private readonly IPositionRepository _repository;
+        public PositionService(IPositionRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         public async Task<IEnumerable<Position>> GetAllPositionsAsync()
         {
-            List<Position> positions = await _context.Positions.ToListAsync();
-            return positions;
+            return await _repository.GetAllPositionsAsync();
         }
 
         public async Task<Position> GetPositionByIdAsync(int id)
         {
-            var position = await _context.Positions.FindAsync(id);
-            return position;
+            return await _repository.GetPositionByIdAsync(id);
         }
 
         public async Task AddPositionAsync(Position position)
         {
-            _context.Positions.Add(position);
-            await _context.SaveChangesAsync();
+            await _repository.AddPositionAsync(position);
         }
 
         public async Task UpdatePositionAsync(Position position)
         {
-            _context.Positions.Update(position);
-            await _context.SaveChangesAsync();
+            await _repository.UpdatePositionAsync(position);
         }
 
         public async Task DeletePositionAsync(int id)
         {
-            var position = await _context.Positions.FindAsync(id);
-            if (position != null)
-            {
-                _context.Positions.Remove(position);
-                await _context.SaveChangesAsync();
-            }
+            await _repository.DeletePositionAsync(id);
         } 
         public async Task ClosePositionAsync(int positionId, string reasonForClosure, int? linkedCandidateId)
         {
-            var position = await _context.Positions.FindAsync(positionId);
-            if (position == null) throw new Exception("Position not found");
-
-            position.Status = "Closed";
-            position.ReasonForClosure = reasonForClosure;
-            position.PositionClosedDate = DateTime.Now;
-
-            if (linkedCandidateId != null)
-            {
-                position.LinkedCandidateID = linkedCandidateId;
-            }
-
-            await _context.SaveChangesAsync();
+           await _repository.ClosePositionAsync(positionId, reasonForClosure, linkedCandidateId);   
         }
+
     }
 }

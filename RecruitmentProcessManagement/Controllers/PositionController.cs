@@ -162,65 +162,6 @@ namespace RecruitmentProcessManagement.Controllers
             return View(new Candidate());
         }
 
-        //[HttpPost]
-        //[AllowAnonymous]
-        //public async Task<IActionResult> Apply(Candidate candidate, int positionId, IFormFile cvFile)
-        //{
-        //    if (cvFile == null || cvFile.Length == 0)
-        //    {
-        //        ModelState.AddModelError("cvFile", "Please upload a valid CV file.");
-        //        ViewBag.PositionId = positionId;
-        //        return View(candidate);
-        //    }
-
-        //    // Save the resume file
-        //    var uploadsFolder = System.IO.Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-        //    if (!Directory.Exists(uploadsFolder))
-        //    {
-        //        Directory.CreateDirectory(uploadsFolder);
-        //    }
-
-        //    var uniqueFileName = $"{Guid.NewGuid()}_{cvFile.FileName}";
-        //    var filePath = System.IO.Path.Combine(uploadsFolder, uniqueFileName);
-
-        //    using (var fileStream = new FileStream(filePath, FileMode.Create))
-        //    {
-        //        await cvFile.CopyToAsync(fileStream);
-        //    }
-
-        //    // Set the resume file path
-        //    candidate.ResumePath = "/uploads/" + uniqueFileName;
-
-        //    if (!ModelState.IsValid)
-        //    {
-        //        ViewBag.PositionId = positionId;
-        //        return View(candidate);
-        //    }
-
-        //    // Check if the candidate already applied
-        //    var existingCandidate = await _candidateservice.GetCandidateById(candidate.CandidateID);
-        //    if (existingCandidate != null)
-        //    {
-        //        TempData["ErrorMessage"] = "You have already applied for this position.";
-        //        return RedirectToAction("Apply", new { positionId });
-        //    }
-
-        //    // Set default values
-        //    candidate.CreatedDate = DateTime.Now;
-        //    candidate.ProfileStatus = "Applied";
-        //    candidate.CandidateSkills = new List<CandidateSkill>();
-        //    candidate.CandidateDocuments = new List<CandidateDocument>();
-        //    candidate.CandidateReviews = new List<CandidateReview>();
-        //    candidate.Interviews = new List<Interview>();
-        //    candidate.FinalSelections = new List<FinalSelection>();
-        //    candidate.CandidateStatusHistories = new List<CandidateStatusHistory>();
-        //    candidate.DocumentVerifications = new List<DocumentVerification>();
-
-        //    await _candidateservice.AddCandidate(candidate);
-
-        //    TempData["SuccessMessage"] = "Application submitted successfully!";
-        //    return RedirectToAction("Apply", new { positionId });
-        //}
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Apply(Candidate candidate, int positionId, IFormFile cvFile)
@@ -230,6 +171,14 @@ namespace RecruitmentProcessManagement.Controllers
                 ModelState.AddModelError("cvFile", "Please upload a valid CV file.");
                 ViewBag.PositionId = positionId;
                 return View(candidate);
+            }
+
+            // Check if a candidate with the same email already exists
+            var existingCandidate = await _candidateservice.GetCandidateByEmail(candidate.Email);
+            if (existingCandidate != null)
+            {
+                TempData["ErrorMessage"] = "You have already applied for this position.";
+                return RedirectToAction("Apply", new { positionId });
             }
 
             // Save the resume file
@@ -247,10 +196,8 @@ namespace RecruitmentProcessManagement.Controllers
                 await cvFile.CopyToAsync(fileStream);
             }
 
-            // **Fix: Set ResumePath before checking ModelState**
             candidate.ResumePath = "/uploads/" + uniqueFileName;
 
-            // **Fix: Ensure ResumePath is not empty**
             if (string.IsNullOrEmpty(candidate.ResumePath))
             {
                 ModelState.AddModelError("ResumePath", "Resume file is required.");
@@ -258,21 +205,10 @@ namespace RecruitmentProcessManagement.Controllers
                 return View(candidate);
             }
 
-            // **Now Check ModelState**
             if (!ModelState.IsValid)
             {
                 ViewBag.PositionId = positionId;
                 return View(candidate);
-            }
-             
-
-            // Check if the candidate already applied
-            var existingCandidate = await _candidateservice.GetCandidateById(candidate.CandidateID);
-            var email = candidate.Email;
-            if (email != null)
-            {
-                TempData["ErrorMessage"] = "You have already applied for this position.";
-                return RedirectToAction("Apply", new { positionId });
             }
 
             // Set default values
@@ -291,7 +227,6 @@ namespace RecruitmentProcessManagement.Controllers
             TempData["SuccessMessage"] = "Application submitted successfully!";
             return RedirectToAction("Apply", new { positionId });
         }
-
 
         private async Task<string> ExtractTextFromCV(IFormFile file)
         {

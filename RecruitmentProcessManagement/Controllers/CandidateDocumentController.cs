@@ -15,18 +15,30 @@ namespace RecruitmentProcessManagement.Controllers
             _webHostEnvironment = webHostEnvironment;
             _candidateDocumentService = candidateDocumentService;
         }
-
+ 
         [HttpGet]
-        public IActionResult CandidateDashboard()
+        public async Task<IActionResult> CandidateDashboard(int candidateId)
         {
-            return View();
+            var candidate = await _candidateDocumentService.GetCandidateById(candidateId);
+            if (candidate == null)
+            {
+                return NotFound();
+            }
+
+            return View(candidate);
         }
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public IActionResult HRDashboard()
+        public async Task<IActionResult> HRDashboard(int candidateId)
         {
-            return View();
+            var candidate = await _candidateDocumentService.GetCandidateById(candidateId);
+            if (candidate == null)
+            {
+                return NotFound();
+            }
+
+            return View(candidate);
         }
 
         [HttpPost]

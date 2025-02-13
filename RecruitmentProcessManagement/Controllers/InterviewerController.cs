@@ -19,6 +19,7 @@ namespace RecruitmentProcessManagement.Controllers
             return View(interviewers);
         }
 
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
@@ -35,6 +36,7 @@ namespace RecruitmentProcessManagement.Controllers
             return View(interviewer);
         }
 
+        [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             var interviewer = await _interviewerService.GetInterviewerByIdAsync(id);
@@ -55,6 +57,7 @@ namespace RecruitmentProcessManagement.Controllers
             return View(interviewer);
         }
 
+        [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
             var interviewer = await _interviewerService.GetInterviewerByIdAsync(id);
@@ -64,10 +67,10 @@ namespace RecruitmentProcessManagement.Controllers
             return View(interviewer);
         }
 
-        [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [HttpPost]
+        public async Task<IActionResult> Delete(Interviewer interviewer)
         {
-            await _interviewerService.DeleteInterviewerAsync(id);
+            await _interviewerService.DeleteInterviewerAsync(interviewer.InterviewerID);
             return RedirectToAction(nameof(Index));
         }
     }

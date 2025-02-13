@@ -70,10 +70,10 @@ namespace RecruitmentProcessManagement.Services
                 .Where(u => stringInterviewerIds.Contains(u.Id))
                 .ToListAsync();
 
-            if (candidate == null || !interviewers.Any())
-            {
-                throw new Exception("Invalid candidate or interviewers.");
-            }
+            //if (candidate == null || !interviewers.Any())
+            //{
+            //    throw new Exception("Invalid candidate or interviewers.");
+            //}
 
             string subject = "Interview Scheduled - " + interviewDate.ToString("yyyy-MM-dd HH:mm");
             string body = $"Dear {candidate.Name},\n\nYou have an interview scheduled on {interviewDate}. \nPlease be prepared.\n\nBest regards,\nHR Team";

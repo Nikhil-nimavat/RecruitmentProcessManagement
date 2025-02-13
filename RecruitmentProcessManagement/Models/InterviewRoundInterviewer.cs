@@ -10,7 +10,7 @@ namespace RecruitmentProcessManagement.Models
         public int InterviewerID { get; set; } // ref to interviewer
         public string? Feedback { get; set; }
         public int? Rating { get; set; }
-         
+
         // Navigational Properties
         public InterviewRound InterviewRound { get; set; }
         public Interviewer Interviewer { get; set; }

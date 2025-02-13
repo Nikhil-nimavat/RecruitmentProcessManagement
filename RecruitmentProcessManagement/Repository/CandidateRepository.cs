@@ -8,8 +8,8 @@ namespace RecruitmentProcessManagement.Repository
 {
     public class CandidateRepository : ICandidateRepository
     {
-        private readonly ApplicationDbContext _context;
-        public CandidateRepository(ApplicationDbContext context)
+        private readonly Data.ApplicationDbContext _context;
+        public CandidateRepository(Data.ApplicationDbContext context)
         {
             _context = context;
         }
@@ -30,6 +30,11 @@ namespace RecruitmentProcessManagement.Repository
             await _context.Candidates.AddAsync(candidate);
             await _context.SaveChangesAsync();
         }
+        public async Task<Candidate> GetCandidateByEmail(string email)
+        {
+            return await _context.Candidates.FirstOrDefaultAsync(c => c.Email == email);
+        }
+
 
         //public async Task UpdateCandidate(Candidate candidate)
         //{
@@ -45,5 +50,39 @@ namespace RecruitmentProcessManagement.Repository
         //        await _context.SaveChangesAsync();
         //    }
         //}
+
+        public async Task<IEnumerable<Skill>> GetSkillList()
+        {
+            return await _context.Skills.ToListAsync();
+        }
+
+        public async Task<Skill> GetSkillById(int id)
+        {
+            var skill = await _context.Skills.FindAsync(id);
+            return skill;
+        }
+
+        public async Task AddSkill(Skill skill)
+        {
+            _context.Skills.Add(skill);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateSkill(Skill skill)
+        {
+            _context.Skills.Update(skill);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteSkill(int id)
+        {
+            var Skill = _context.Skills.Find(id);
+            if (Skill != null)
+            {
+                _context.Skills.Remove(Skill);
+                await _context.SaveChangesAsync();
+            }
+
+        }
     }
 }

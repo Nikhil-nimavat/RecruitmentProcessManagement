@@ -1,5 +1,11 @@
 ﻿<h2>Upload Bulk Candidates</h2>
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<h6>Upload a Excel file with detail of candidate that will take part in the Event</h6>
 <form asp-controller="BulkHiring" asp-action="UploadBulkCandidates" method="post" enctype="multipart/form-data">
     <input type="file" name="excelFile" class="form-control" />
     <button type="submit" class="btn btn-primary">Upload</button>

@@ -8,6 +8,6 @@ namespace RecruitmentProcessManagement.Repository.Interfaces
         Task<List<Candidate>> GetCandidatesForReview(int positionId);
         Task<CandidateReview> GetReview(int candidateId, int positionId, int reviewerId);
         Task<bool> SubmitReview(CandidateReview review, Candidate candidate, List<CandidateSkill> skills);
-        Task<List<CandidateReview>> GetCandidateScreeningHistory(int candidateId);
+        Task<List<CandidateReview>> GetCandidateScreeningHistory();
     }
 }

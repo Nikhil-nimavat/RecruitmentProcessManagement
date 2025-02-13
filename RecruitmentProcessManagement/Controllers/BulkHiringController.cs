@@ -29,15 +29,41 @@ namespace RecruitmentProcessManagement.Controllers
             if (excelFile == null || excelFile.Length == 0)
             {
                 TempData["ErrorMessage"] = "Please upload a valid Excel file!";
-                return RedirectToAction("HRDashboard");
+                return RedirectToAction("UploadBulkCandidates");
             }
+
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance); 
 
             using (var stream = excelFile.OpenReadStream())
             {
                 using (var reader = ExcelReaderFactory.CreateReader(stream))
                 {
                     DataTable dt = new DataTable();
-                    dt.Load(reader);
+                    bool isFirstRow = true;
+
+                    // Read each row
+                    while (reader.Read())
+                    {
+                        if (isFirstRow)
+                        {
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                dt.Columns.Add(reader.GetValue(i)?.ToString() ?? $"Column{i}");
+                            }
+                            isFirstRow = false;
+                        }
+                        else
+                        {
+                            // Add data rows
+                            DataRow row = dt.NewRow();
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                row[i] = reader.GetValue(i)?.ToString();
+                            }
+                            dt.Rows.Add(row);
+                        }
+                    }
+
                     await _bulkHiringService.ImportCandidatesFromExcel(dt);
                 }
             }

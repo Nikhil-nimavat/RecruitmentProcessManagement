@@ -15,7 +15,7 @@ namespace RecruitmentProcessManagement.Models
         [DataType(DataType.Date)]
         public DateTime InterviewDate { get; set; }
         public string Status { get; set; }
-        public string Feedback { get; set; }
+        public string? Feedback { get; set; }
 
         // Navgational Properties
 

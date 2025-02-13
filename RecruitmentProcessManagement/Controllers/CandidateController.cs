@@ -1,16 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RecruitmentProcessManagement.Models;
 using RecruitmentProcessManagement.Repository;
+using RecruitmentProcessManagement.Services.Intefaces;
 
 namespace RecruitmentProcessManagement.Controllers
 {
     public class CandidateController : Controller
     {
-        private readonly CandidateRepository _repository;
+        private readonly ICandidateService _candidateService;
 
-        public CandidateController(CandidateRepository repository)
+        public CandidateController(ICandidateService candidateService)
         {
-            _repository = repository;
+            _candidateService = candidateService;
         }
 
         public IActionResult Index()
@@ -28,7 +29,7 @@ namespace RecruitmentProcessManagement.Controllers
         {
             if (ModelState.IsValid)
             { 
-                await _repository.AddCandidate(candidate);
+                await _candidateService.AddCandidate(candidate);
                 return RedirectToAction("Index");
             }
 
@@ -38,7 +39,7 @@ namespace RecruitmentProcessManagement.Controllers
         //[HttpGet]
         //public async Task<IActionResult> Edit(int id)
         //{ 
-        //    var candidate = await _repository.GetCandidateById(id);
+        //    var candidate = await _candidateService.GetCandidateById(id);
         //    if (candidate == null)
         //    {
         //        NotFound(); 
@@ -52,7 +53,7 @@ namespace RecruitmentProcessManagement.Controllers
         //{
         //    if (ModelState.IsValid)
         //    {
-        //        await _repository.UpdateCandidate(candidate);
+        //        await _candidateService.UpdateCandidate(candidate);
         //        return RedirectToAction(nameof(Index));
         //    }
         //    return View(candidate);
@@ -61,7 +62,7 @@ namespace RecruitmentProcessManagement.Controllers
         //[HttpGet]
         //public async Task<IActionResult> Delete(int id)
         //{
-        //    var candidate = await _repository.GetCandidateById(id);
+        //    var candidate = await _candidateService.GetCandidateById(id);
         //    if (candidate == null)
         //    {
         //        return NotFound();
@@ -73,8 +74,72 @@ namespace RecruitmentProcessManagement.Controllers
         //[HttpPost]
         //public async Task<IActionResult> Delete(Candidate candidate)
         //{
-        //    await _repository.DeleteCandidateById(candidate.CandidateID);
+        //    await _candidateService.DeleteCandidateById(candidate.CandidateID);
         //    return View(nameof(Index));
         //}
+
+
+        [HttpGet]
+        public async Task<IActionResult> SkillList()
+        {
+            var skills = await _candidateService.GetSkillList();
+            return View(skills);
+        }
+
+        [HttpGet]
+        public IActionResult CreateSkill()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateSkill(Skill skill)
+        {
+            if (ModelState.IsValid)
+            {
+                await _candidateService.AddSkill(skill);
+                return RedirectToAction("SkillList");
+            }
+            return View(skill);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditSkill(int id)
+        {
+            var skill = await _candidateService.GetSkillById(id);
+            if (skill == null)
+            {
+                NotFound();
+            }
+
+            return View(skill);
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditSkill(Skill skill)
+        {
+            if (ModelState.IsValid)
+            {
+                await _candidateService.UpdateSkill(skill);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(skill);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteSkill(int id)
+        {
+            var skill = await _candidateService.GetSkillById(id);
+            if (skill == null) return NotFound();
+            return View(skill);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteSkillConfirmed(Skill skill)
+        {
+            await _candidateService.DeleteSkill(skill.SkillID);
+            return View(nameof(Index));
+        }
     }
 }

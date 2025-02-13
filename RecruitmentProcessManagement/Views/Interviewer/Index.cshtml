@@ -32,8 +32,7 @@
                 <td>@interviewer.CreatedDate.ToString("yyyy-MM-dd")</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@interviewer.InterviewerID" class="btn btn-warning">Edit</a>
-                    <a asp-action="Details" asp-route-id="@interviewer.InterviewerID" class="btn btn-info">View</a>
-                    <a asp-action="Delete" asp-route-id="@interviewer.InterviewerID" class="btn btn-danger" onclick="return confirm('Are you sure?');">Delete</a>
+                    <a href="@Url.Action("Delete", new { id = interviewer.InterviewerID })" class="btn btn-danger btn-sm">Delete</a>
                 </td>
             </tr>
         }

@@ -9,7 +9,7 @@ namespace RecruitmentProcessManagement.Services.Intefaces
         Task<bool> SubmitReview(int candidateId, int positionId,
             int reviewerId, string comments,
             string status, List<CandidateSkill> candidateSkills);
-        Task<List<CandidateReview>> GetCandidateScreeningHistory(int candidateId);
+        Task<List<CandidateReview>> GetCandidateScreeningHistory();
         Task MoveCandidateToInterviewStage(int candidateId, int positionId);
     }
 }

@@ -7,9 +7,9 @@ namespace RecruitmentProcessManagement.Repository
 {
     public class InterviewerRepository : IInterviewerRepository
     {
-        private readonly ApplicationDbContext _context;
+        private readonly Data.ApplicationDbContext _context;
 
-        public InterviewerRepository(ApplicationDbContext context)
+        public InterviewerRepository(Data.ApplicationDbContext context)
         {
             _context = context;
         }

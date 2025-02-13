@@ -23,7 +23,7 @@ namespace RecruitmentProcessManagement.Models.ViewModels
         [Required]
         public DateTime InterviewDate { get; set; }
 
-        [Required]
+        [Required(ErrorMessage ="At least one Interviewer must be selected")]
         public List<string> InterviewerIds { get; set; } = new List<string>();
         public List<SelectListItem> Interviewers { get; set; } = new List<SelectListItem>();
     }

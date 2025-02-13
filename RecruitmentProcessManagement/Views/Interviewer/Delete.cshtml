@@ -1,0 +1,15 @@
+﻿@model RecruitmentProcessManagement.Models.Interviewer
+
+@{
+    ViewData["Title"] = "Delete Position";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>Are you sure you want to delete the Interviewer"<strong>@Model.FullName</strong>"?</p>
+
+<form asp-controller="Interviewer" asp-action="Delete" method="post">
+    <input asp-for="InterviewerID" type="hidden" />
+    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    <a href="@Url.Action("Index")" class="btn btn-secondary">Cancel</a>
+</form>
