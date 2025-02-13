@@ -4,6 +4,7 @@ using RecruitmentProcessManagement.Services.Intefaces;
 
 namespace RecruitmentProcessManagement.Controllers
 {
+    [Authorize(Roles = "Admin, HR")]
     public class DocumentVerificationController : Controller
     {
         private readonly IDocumentVerificationService _documentVerificationService;

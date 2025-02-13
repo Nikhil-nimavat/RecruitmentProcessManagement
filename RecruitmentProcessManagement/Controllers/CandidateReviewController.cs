@@ -38,7 +38,7 @@ namespace RecruitmentProcessManagement.Controllers
             return View(reviewViewModels);
         }
 
-
+        // Error Code
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public IActionResult ReviewCandidate()
@@ -75,6 +75,7 @@ namespace RecruitmentProcessManagement.Controllers
 
         //Updated for the view alignment and encp logic
 
+        [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ReviewCandidate(int candidateId, int positionId)
         {

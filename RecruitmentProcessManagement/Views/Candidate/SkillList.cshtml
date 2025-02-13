@@ -7,7 +7,6 @@
 <table class="table table-bordered mt-3">
     <thead>
         <tr>
-            <th>ID</th>
             <th>Skill Name</th>
             <th>Actions</th>
         </tr>
@@ -16,7 +15,6 @@
         @foreach (var skill in Model)
         {
             <tr>
-                <td>@skill.SkillID</td>
                 <td>@skill.SkillName</td>
                 <td>
                     <a href="@Url.Action("EditSkill", new { id = skill.SkillID })" class="btn btn-warning">Edit</a>

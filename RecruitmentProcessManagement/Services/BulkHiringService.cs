@@ -17,5 +17,10 @@ namespace RecruitmentProcessManagement.Services.Intefaces
         {
             await _repository.ImportCandidatesFromExcel(dataTable);
         }
+
+        public async Task<Candidate> GetCandidateByEmail(string email)
+        {
+            return await _repository.GetCandidateByEmail(email);
+        }
     }
 }

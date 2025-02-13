@@ -6,7 +6,7 @@ using RecruitmentProcessManagement.Models;
 
 namespace RecruitmentProcessManagement.Controllers
 {
-    //[Authorize (Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class AdministrationController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;

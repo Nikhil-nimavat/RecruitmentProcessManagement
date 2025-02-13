@@ -11,8 +11,8 @@ namespace RecruitmentProcessManagement.Models
         public string SkillName { get; set; }
 
         // Navigation property
-        public ICollection<PositionSkill> PositionSkills { get; set; }
-        public ICollection<CandidateSkill> CandidateSkills { get; set; }
+        public ICollection<PositionSkill> PositionSkills { get; set; } = new List<PositionSkill>();
+        public ICollection<CandidateSkill> CandidateSkills { get; set; } = new List<CandidateSkill>();
     }
 
 }

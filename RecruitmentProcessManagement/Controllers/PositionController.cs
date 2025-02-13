@@ -48,7 +48,7 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Recruiter")]
         public IActionResult Create()
         {
             return View();
@@ -56,7 +56,7 @@ namespace RecruitmentProcessManagement.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Recruiter")]
         public async Task<IActionResult> Create(Position position)
         {
             if (ModelState.IsValid)
@@ -68,7 +68,7 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Recruiter")]
         public async Task<IActionResult> Edit(int id)
         {
             var position = await _positionService.GetPositionByIdAsync(id);
@@ -81,7 +81,7 @@ namespace RecruitmentProcessManagement.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Recruiter")]
         public async Task<IActionResult> Edit(int id, Position position)
         {
             if (id != position.PositionID)
@@ -98,7 +98,7 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Recruiter")]
         public async Task<IActionResult> Delete(int id)
         {
             var position = await _positionService.GetPositionByIdAsync(id);
@@ -111,7 +111,7 @@ namespace RecruitmentProcessManagement.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Recruiter")]
         public async Task<IActionResult> Delete(Position position)
         {
             await _positionService.DeletePositionAsync(position.PositionID);
@@ -138,7 +138,7 @@ namespace RecruitmentProcessManagement.Controllers
         // Updated one with logic Encaped
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Recruiter")]
         public async Task<IActionResult> ClosePosition(int id, string reasonForClosure, int? linkedCandidateId)
         {
             try
@@ -166,9 +166,11 @@ namespace RecruitmentProcessManagement.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Apply(Candidate candidate, int positionId, IFormFile cvFile)
         {
-            if (cvFile == null || cvFile.Length == 0)
+            var extension = System.IO.Path.GetExtension(cvFile.FileName).ToLower();
+
+            if (cvFile == null || cvFile.Length == 0 || extension != ".pdf" || extension != ".doc" || extension != ".docx" || extension != ".txt")
             {
-                ModelState.AddModelError("cvFile", "Please upload a valid CV file.");
+                ModelState.AddModelError("cvFile", "Please upload a valid CV file. Please upload a PDF, DOC, or TXT file.");
                 ViewBag.PositionId = positionId;
                 return View(candidate);
             }

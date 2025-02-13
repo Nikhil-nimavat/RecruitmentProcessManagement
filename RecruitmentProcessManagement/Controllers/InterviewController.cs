@@ -10,6 +10,7 @@ using RecruitmentProcessManagement.Services.Intefaces;
 
 namespace RecruitmentProcessManagement.Controllers
 {
+    [Authorize(Roles = "Admin, Recruiter")]
     public class InterviewController : Controller
     {
         private readonly IInterviewService _interviewService;
@@ -69,10 +70,12 @@ namespace RecruitmentProcessManagement.Controllers
                 return RedirectToAction("ManageInterviews");
             }
 
+            // Error code we need change it to the interviewer
             var interviewers = interview.InterviewRounds
                 .SelectMany(ir => ir.InterviewRoundInterviewers)
                 .Select(iri => iri.Interviewer.FullName)
                 .ToList();
+
 
             var model = new InterviewDetailsViewModel
             {

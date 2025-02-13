@@ -5,6 +5,12 @@
     <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
 }
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+
 <h6>Upload a Excel file with detail of candidate that will take part in the Event</h6>
 <form asp-controller="BulkHiring" asp-action="UploadBulkCandidates" method="post" enctype="multipart/form-data">
     <input type="file" name="excelFile" class="form-control" />

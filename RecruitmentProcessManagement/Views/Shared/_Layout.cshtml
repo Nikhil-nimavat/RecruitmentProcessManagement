@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - RecruitmentProcessManagement</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/RecruitmentProcessManagement.styles.css" asp-append-version="true" />
 </head>
@@ -15,7 +15,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">RecruitmentProcessManagement</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">RP Management</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                 aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -34,7 +34,7 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Position" asp-action="Index">Jobs</a>
                             </li>
-                            @if (User.IsInRole("Admin"))
+                            @if (User.IsInRole("Admin") || User.IsInRole("Recruiter"))
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-controller="BulkHiring" asp-action="UploadBulkCandidates">Bulk Hiring</a>
@@ -60,38 +60,42 @@
 
                         @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                         {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-                                   data-bs-toggle="dropdown" aria-expanded="false">
-                                    Interview
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                    <a class="dropdown-item" asp-controller="Interview"
-                                       asp-action="InterviewDetails">Details</a>
-                                    <a class="dropdown-item" asp-controller="Interview"
-                                       asp-action="Manageinterviews">Manage</a>
-                                    <a class="dropdown-item" asp-controller="Interview"
-                                       asp-action="ScheduleInterview">Schedule</a>
-                                    <a class="dropdown-item" asp-controller="Interviewer"
-                                        asp-action="Index">Interviewer</a>
-                                </ul>
-                            </li>
+                            @if (User.IsInRole("Admin") || User.IsInRole("Interviewer") || User.IsInRole("HR"))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                        Interview
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                        <a class="dropdown-item" asp-controller="Interview"
+                                        asp-action="ScheduleInterview">Schedule</a>
+                                        <a class="dropdown-item" asp-controller="Interview"
+                                        asp-action="Manageinterviews">Manage</a>
+                                        <a class="dropdown-item" asp-controller="Interviewer"
+                                        asp-action="Index">Add Interviewers</a>
+                                    </ul>
+                                </li>
+                            }
                         }
 
-                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                        @if (SignInManager.IsSignedIn(User))
                         {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-                                   data-bs-toggle="dropdown" aria-expanded="false">
-                                    Candidate Review
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                    <a class="dropdown-item" asp-controller="CandidateReview"
-                                       asp-action="Index">Reviews</a>
-                                    <a class="dropdown-item" asp-controller="CandidateReview"
-                                       asp-action="ReviewCandidate">Review Candidate</a>
-                                </ul>
-                            </li>
+                            @if (User.IsInRole("Interviewer") || User.IsInRole("HR"))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                        Candidate Review
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                        <a class="dropdown-item" asp-controller="CandidateReview"
+                                        asp-action="Index">Candidate Reviews</a>
+                                        <a class="dropdown-item" asp-controller="CandidateReview"
+                                        asp-action="ReviewCandidate">Review Candidate</a>
+                                    </ul>
+                                </li>
+                            }
                         }
 
                         @if (SignInManager.IsSignedIn(User))
@@ -104,7 +108,7 @@
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                     <a class="dropdown-item" asp-controller="CandidateDocument"
                                        asp-action="CandidateDashboard">Dashboard</a>
-                                       @if (User.IsInRole("Admin"))
+                                    @if (User.IsInRole("Admin") || User.IsInRole("HR") || User.IsInRole("Reviewer"))
                                        {
                                            <a class="dropdown-item" asp-controller="CandidateDocument"
                                               asp-action="HRDashboard">HR Dashboard</a>
@@ -114,7 +118,7 @@
                         }
                     </ul>
                     <ul class="navbar-nav ml-auto">
-                        @*If the user is signed-in the only display Logout link*@
+                        @*If the user is signed-in then only display Logout link*@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <li class="nav-item dropdown">

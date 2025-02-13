@@ -5,7 +5,7 @@ namespace RecruitmentProcessManagement.Repository.Interfaces
 {
     public interface ICandidateRepository
     {
-        //Task<IEnumerable<Candidate>> GetAllCandidatesAsync(); 
+        Task<IEnumerable<Candidate>> GetAllCandidatesAsync();
 
         Task<Candidate> GetCandidateById(int id);
 
@@ -13,9 +13,9 @@ namespace RecruitmentProcessManagement.Repository.Interfaces
 
         Task<Candidate> GetCandidateByEmail(string email);
 
-        //Task UpdateCandidate(Candidate candidate);
+        Task UpdateCandidate(Candidate candidate);
 
-        //Task DeleteCandidateById(int id);
+        Task DeleteCandidateById(int id);
 
         Task<IEnumerable<Skill>> GetSkillList();
 

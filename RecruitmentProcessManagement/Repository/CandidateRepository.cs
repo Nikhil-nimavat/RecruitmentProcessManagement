@@ -8,48 +8,50 @@ namespace RecruitmentProcessManagement.Repository
 {
     public class CandidateRepository : ICandidateRepository
     {
-        private readonly Data.ApplicationDbContext _context;
-        public CandidateRepository(Data.ApplicationDbContext context)
+        private readonly ApplicationDbContext _context;
+        public CandidateRepository(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        //public async Task<IEnumerable<Candidate>> GetAllCandidatesAsync()
-        //{
-        //    List<Candidate> candidates = await _context.Candidates.ToListAsync();
-        //    return candidates;
-        //}
+        public async Task<IEnumerable<Candidate>> GetAllCandidatesAsync()
+        {
+            List<Candidate> candidates = await _context.Candidates.ToListAsync();
+            return candidates;
+        }
 
         public async Task<Candidate> GetCandidateById(int id)
         {
             var candidate = await _context.Candidates.FindAsync(id);
             return candidate;
         }
+
         public async Task AddCandidate(Candidate candidate)
         {
             await _context.Candidates.AddAsync(candidate);
             await _context.SaveChangesAsync();
         }
+
         public async Task<Candidate> GetCandidateByEmail(string email)
         {
             return await _context.Candidates.FirstOrDefaultAsync(c => c.Email == email);
         }
 
+        public async Task UpdateCandidate(Candidate candidate)
+        {
+            _context.Candidates.Update(candidate);
+            await _context.SaveChangesAsync();
+        }
 
-        //public async Task UpdateCandidate(Candidate candidate)
-        //{
-        //    _context.Candidates.Update(candidate);
-        //    await _context.SaveChangesAsync();
-        //}
-        //public async Task DeleteCandidateById(int id)
-        //{
-        //   var candidate = _context.Candidates.Find(id);
-        //    if (candidate != null)
-        //    { 
-        //        _context.Candidates.Remove(candidate);
-        //        await _context.SaveChangesAsync();
-        //    }
-        //}
+        public async Task DeleteCandidateById(int id)
+        {
+            var candidate = _context.Candidates.Find(id);
+            if (candidate != null)
+            {
+                _context.Candidates.Remove(candidate);
+                await _context.SaveChangesAsync();
+            }
+        }
 
         public async Task<IEnumerable<Skill>> GetSkillList()
         {

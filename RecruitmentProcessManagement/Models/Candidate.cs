@@ -29,7 +29,7 @@ namespace RecruitmentProcessManagement.Models
         public DateTime? ModifiedDate { get; set; }
 
         // Nav Property
-        public ICollection<CandidateSkill> CandidateSkills { get; set; } = new List<CandidateSkill>();
+        public ICollection<CandidateSkill> CandidateSkills { get; set; } =  new List<CandidateSkill>();
         public ICollection<CandidateDocument> CandidateDocuments { get; set; } = new List<CandidateDocument>();
         public ICollection<CandidateReview> CandidateReviews { get; set; } = new List<CandidateReview>();
         public ICollection<Interview> Interviews { get; set; } = new List<Interview>();

@@ -36,48 +36,47 @@ namespace RecruitmentProcessManagement.Controllers
             return View(candidate);
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> Edit(int id)
-        //{ 
-        //    var candidate = await _candidateService.GetCandidateById(id);
-        //    if (candidate == null)
-        //    {
-        //        NotFound(); 
-        //    }
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var candidate = await _candidateService.GetCandidateById(id);
+            if (candidate == null)
+            {
+                NotFound();
+            }
 
-        //    return View(candidate);
-        //}
+            return View(candidate);
+        }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Edit(Candidate candidate)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        await _candidateService.UpdateCandidate(candidate);
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(candidate);
-        //}
+        [HttpPost]
+        public async Task<IActionResult> Edit(Candidate candidate)
+        {
+            if (ModelState.IsValid)
+            {
+                await _candidateService.UpdateCandidate(candidate);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(candidate);
+        }
 
-        //[HttpGet]
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    var candidate = await _candidateService.GetCandidateById(id);
-        //    if (candidate == null)
-        //    {
-        //        return NotFound();
-        //    }
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var candidate = await _candidateService.GetCandidateById(id);
+            if (candidate == null)
+            {
+                return NotFound();
+            }
 
-        //    return View(candidate);
-        //}
+            return View(candidate);
+        }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Delete(Candidate candidate)
-        //{
-        //    await _candidateService.DeleteCandidateById(candidate.CandidateID);
-        //    return View(nameof(Index));
-        //}
-
+        [HttpPost]
+        public async Task<IActionResult> Delete(Candidate candidate)
+        {
+            await _candidateService.DeleteCandidateById(candidate.CandidateID);
+            return View(nameof(Index));
+        }
 
         [HttpGet]
         public async Task<IActionResult> SkillList()
@@ -122,7 +121,7 @@ namespace RecruitmentProcessManagement.Controllers
             if (ModelState.IsValid)
             {
                 await _candidateService.UpdateSkill(skill);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("SkillList");
             }
             return View(skill);
         }
@@ -136,10 +135,10 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteSkillConfirmed(Skill skill)
+        public async Task<IActionResult> DeleteSkill(Skill skill)
         {
             await _candidateService.DeleteSkill(skill.SkillID);
-            return View(nameof(Index));
+            return View("SkillList");
         }
     }
 }

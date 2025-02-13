@@ -26,7 +26,15 @@ namespace RecruitmentProcessManagement.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UploadBulkCandidates(IFormFile excelFile)
         {
+            
             if (excelFile == null || excelFile.Length == 0)
+            {
+                TempData["ErrorMessage"] = "Please upload a valid Excel file!";
+                return RedirectToAction("UploadBulkCandidates");
+            }
+            var extension = System.IO.Path.GetExtension(excelFile.FileName).ToLower();
+
+            if (extension != ".xlsx")
             {
                 TempData["ErrorMessage"] = "Please upload a valid Excel file!";
                 return RedirectToAction("UploadBulkCandidates");
@@ -68,8 +76,8 @@ namespace RecruitmentProcessManagement.Controllers
                 }
             }
 
-            TempData["SuccessMessage"] = "Bulk candidates uploaded successfully!";
-            return RedirectToAction("HRDashboard");
+            TempData["SuccessMessage"] = "Bulk candidates uploaded sucessfully! Only Unique entries are allowed.";
+            return RedirectToAction("UploadBulkCandidates");
         }
     }
 }

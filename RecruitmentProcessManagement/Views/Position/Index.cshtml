@@ -1,13 +1,15 @@
 ﻿@model IEnumerable<RecruitmentProcessManagement.Models.Position>
 @{
-    ViewData["Title"] = "Job Positions";
+    ViewData["Title"] = "Positions";
 }
 
 <h1>@ViewData["Title"]</h1>
 
-<a class="btn btn-primary mb-3" asp-controller="Position" asp-action="Create">Create New Position</a>
+@if (User.IsInRole("Admin"))
+{
+    <a class="btn btn-primary mb-3" asp-controller="Position" asp-action="Create">Create New Position</a>
+}
 
-<h2>Job Positions</h2>
 
 <table class="table table-bordered">
     <thead>
@@ -39,10 +41,12 @@
                             <button class="btn btn-danger" onclick="openCloseModal(@position.PositionID)">Close</button>
                         }
                     }
-                    <a asp-controller="Position" asp-action="Apply" asp-route-positionId="@position.PositionID" class="btn btn-success">
-                        Apply
-                    </a>
-
+                    @if (position.Status != "Closed")
+                    {
+                        <a asp-controller="Position" asp-action="Apply" asp-route-positionId="@position.PositionID" class="btn btn-success">
+                            Apply
+                        </a>
+                    }
                     <button class="btn btn-info" onclick="toggleDetails(@position.PositionID)">View Details</button>
                 </td>
             </tr>

@@ -5,6 +5,7 @@ using RecruitmentProcessManagement.Services.Intefaces;
 
 namespace RecruitmentProcessManagement.Controllers
 {
+    [Authorize(Roles = "Admin, HR")]
     public class FinalSelectionController : Controller
     {
         private readonly IFinalSelectionService _finalSelectionService;
@@ -18,6 +19,7 @@ namespace RecruitmentProcessManagement.Controllers
 
 
         // Needs improvement as for buld id creation we need password as well in which could be static intially like "Test#@123"
+        // either go with password update or give pattern password REVIEW Date: 13-02-25
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> SelectCandidate(int candidateId, int positionId, DateTime joiningDate)

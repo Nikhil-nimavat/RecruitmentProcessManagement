@@ -11,45 +11,51 @@ namespace RecruitmentProcessManagement.Services
     {
         private readonly ICandidateRepository _candidateRepository;
 
-        public CandidateService(ICandidateRepository candidateRepository, Data.ApplicationDbContext context)
+        public CandidateService(ICandidateRepository candidateRepository, ApplicationDbContext context)
         {
             _candidateRepository = candidateRepository;
         }
 
-        public async Task AddCandidate(Candidate candidate)
+        public async Task<IEnumerable<Candidate>> GetAllCandidatesAsync()
         {
-            await _candidateRepository.AddCandidate(candidate);
+            return await _candidateRepository.GetAllCandidatesAsync();
         }
-
-        public async Task GetCandidateById(int id)
+        public async Task<Candidate> GetCandidateById(int id)
         {
-            await _candidateRepository.GetCandidateById(id);
+            return await _candidateRepository.GetCandidateById(id);
         }
         public async Task<Candidate> GetCandidateByEmail(string email)
         {
             return await _candidateRepository.GetCandidateByEmail(email);
         }
-
+        public async Task AddCandidate(Candidate candidate)
+        {
+            await _candidateRepository.AddCandidate(candidate);
+        }
+        public async Task UpdateCandidate(Candidate candidate)
+        {
+            await _candidateRepository.UpdateCandidate(candidate);
+        }
+        public async Task DeleteCandidateById(int id)
+        { 
+            await _candidateRepository.DeleteCandidateById(id);
+        }
         public async Task<IEnumerable<Skill>> GetSkillList()
         {
             return await _candidateRepository.GetSkillList();
         }
-
         public async Task<Skill> GetSkillById(int id)
         {
             return await _candidateRepository.GetSkillById(id);   
         }
-
         public async Task AddSkill(Skill skill)
         {
             await _candidateRepository.AddSkill(skill);
         }
-
         public async Task UpdateSkill(Skill skill)
         {
             await _candidateRepository.UpdateSkill(skill);
         }
-
         public async Task DeleteSkill(int id)
         {
             await _candidateRepository.DeleteSkill(id);
