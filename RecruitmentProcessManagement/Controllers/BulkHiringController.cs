@@ -24,7 +24,7 @@ namespace RecruitmentProcessManagement.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UploadBulkCandidates(IFormFile excelFile)
+        public async Task<IActionResult> UploadBulkCandidates(IFormFile excelFile)  
         {
             
             if (excelFile == null || excelFile.Length == 0)

@@ -18,8 +18,14 @@ namespace RecruitmentProcessManagement.Repository
             return await _context.Candidates.FirstOrDefaultAsync(c => c.Email == email);
         }
 
-        // email checking is not working fix it with debugging the code ==> Working properly break point yet to
+        // email checking is not working fix it with debugging the code ==> Now Working properly break point yet to
         // find and test
+        // test case - 1
+        // test on 1000 row will take a lot of  time
+        // test case - 2
+        // test on invlid data 
+        // test case - 3
+        //
         public async Task ImportCandidatesFromExcel(DataTable dataTable)
         {
             foreach (DataRow row in dataTable.Rows)
@@ -35,6 +41,7 @@ namespace RecruitmentProcessManagement.Repository
                         Email = row["Email"].ToString(),
                         PhoneNumber = row["PhoneNumber"].ToString(),
                         CollegeName = row["CollegeName"].ToString(),
+                        ResumePath = row["ResumePath"].ToString(),
                         CreatedDate = DateTime.Now,
                         ProfileStatus = "Bulk Hire"
                     };

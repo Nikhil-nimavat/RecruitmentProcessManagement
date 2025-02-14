@@ -6,6 +6,8 @@
 <h2>Schedule Interview</h2>
 
 <form asp-action="ScheduleInterview" method="post">
+
+    <div asp-validation-summary="All" class="text-danger"></div>
     <div class="mb-3">
         <label class="form-label">Candidate</label>
         <select asp-for="CandidateId" asp-items="Model.Candidates" class="form-control" required>

@@ -38,16 +38,16 @@
                         <a href="@Url.Action("Delete", new { id = position.PositionID })" class="btn btn-danger btn-sm">Delete</a>
                         @if (position.Status != "Closed")
                         {
-                            <button class="btn btn-danger" onclick="openCloseModal(@position.PositionID)">Close</button>
+                            <button class="btn btn-danger btn-sm" onclick="openCloseModal(@position.PositionID)">Close</button>
                         }
                     }
                     @if (position.Status != "Closed")
                     {
-                        <a asp-controller="Position" asp-action="Apply" asp-route-positionId="@position.PositionID" class="btn btn-success">
+                        <a asp-controller="Position" asp-action="Apply" asp-route-positionId="@position.PositionID" class="btn btn-success btn-sm">
                             Apply
                         </a>
                     }
-                    <button class="btn btn-info" onclick="toggleDetails(@position.PositionID)">View Details</button>
+                    <button class="btn btn-info btn-sm" onclick="toggleDetails(@position.PositionID)">Details</button>
                 </td>
             </tr>
             <tr id="details-@position.PositionID" style="display: none;">

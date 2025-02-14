@@ -90,6 +90,38 @@ namespace RecruitmentProcessManagement.Controllers
             };
 
             return View(model);
+
+            //var interview = await _context.Interviews
+            //.Include(i => i.Candidate)
+            //.Include(i => i.Position)
+            //.FirstOrDefaultAsync(i => i.InterviewID == interviewId);
+
+            //if (interview == null)
+            //{
+            //    TempData["ErrorMessage"] = "Interview not found.";
+            //    return RedirectToAction("ManageInterviews");
+            //}
+
+            //var interviewers = await _context.Interviewers
+            //    .Where(ii => ii.InterviewerID == interviewId)
+            //    .Include(ii => ii.InterviewerID)
+            //    .Select(ii => ii.FullName)
+            //    .ToListAsync();
+
+            //var model = new InterviewDetailsViewModel
+            //{
+            //    InterviewId = interview.InterviewID,
+            //    CandidateName = interview.Candidate.Name,
+            //    PositionTitle = interview.Position.JobTitle,
+            //    InterviewType = interview.InterviewType,
+            //    InterviewDate = interview.InterviewDate,
+            //    Status = interview.Status,
+            //    Interviewers = interviewers,
+            //    Feedback = interview.Feedback?.ToString() ?? "Not Provided"
+            //};
+
+            //return View(model);
+
         }
 
         [HttpGet]

@@ -14,13 +14,13 @@
             <p><strong>Interview Type:</strong> @Model.InterviewType</p>
             <p><strong>Date & Time:</strong> @Model.InterviewDate.ToString("f")</p>
             <p><strong>Status:</strong> <span class="badge bg-@(Model.Status == "Completed" ? "success" : "warning")">@Model.Status</span></p>
-            <p><strong>Interviewers:</strong> @(Model.Interviewers?.Any() == true ? string.Join(", ", Model.Interviewers) : "Not Assigned")</p>
+            @* <p><strong>Interviewers:</strong> @(Model.Interviewers?.Any() == true ? Model.Interviewers.ToString() : "Not Assigned")</p> *@
 
-            @if (!string.IsNullOrEmpty(Model.Feedback))
-            {
-                <h5>Feedback</h5>
-                <p>@Model.Feedback</p>
-            }
+            @if (!string.IsNullOrEmpty(Model.Feedback)) 
+             { 
+                 <h5>Feedback</h5> 
+                 <p>@Model.Feedback</p> 
+             }
 
             @if (User.IsInRole("Interviewer") && Model.Status == "Scheduled")
             {

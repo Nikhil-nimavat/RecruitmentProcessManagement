@@ -1,63 +1,110 @@
-﻿@model CandidateReviewViewModel
+﻿@model RecruitmentProcessManagement.Models.ViewModels.ReviewCandidateViewModel
 
 @{
     ViewData["Title"] = "Review Candidate";
 }
 
-@if (ViewBag.PreviousScreeningDate != null)
-{
-    <div class="alert alert-warning">
-        This candidate was previously screened on @ViewBag.PreviousScreeningDate.
-    </div>
-}
-
 <h2>Review Candidate</h2>
 
 <form asp-action="SubmitReview" method="post">
-    <input type="hidden" asp-for="CandidateID" />
-    <input type="hidden" asp-for="PositionID" />
-    <input type="hidden" asp-for="ReviewerID" />
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="mb-3">
+        <label class="form-label">Candidate</label>
+        <select asp-for="CandidateId" asp-items="Model.Candidates" class="form-control" required>
+            <option value="">Select Candidate</option>
+        </select>
+    </div>
 
     <div class="mb-3">
-        <label class="form-label">Comments</label>
-        <textarea asp-for="Comments" class="form-control"></textarea>
-        <span asp-validation-for="Comments" class="text-danger"></span>
+        <label class="form-label">Position</label>
+        <select asp-for="PositionId" asp-items="Model.Positions" class="form-control" required>
+            <option value="">Select Position</option>
+        </select>
     </div>
 
     <div class="mb-3">
         <label class="form-label">Status</label>
-        <select asp-for="Status" class="form-control">
-            <option value="">-- Select Status --</option>
-            <option value="Shortlisted">Shortlisted</option>
-            <option value="Rejected">Rejected</option>
+        <select asp-for="CurrentStatus" asp-items="Model.StatusOptions" class="form-control" required>
+            <option value="">Select Status</option>
         </select>
-        <span asp-validation-for="Status" class="text-danger"></span>
     </div>
 
-    <h4>Candidate Skills</h4>
-    <div id="skillsContainer">
-        @for (int i = 0; i < Model.CandidateSkills.Count; i++)
-        {
-            <div class="mb-2">
-                <label class="form-label">Skill</label>
-                <select asp-for="CandidateSkills[i].SkillID" class="form-control">
-                    <option value="">-- Select Skill --</option>
-                    <option value="1">C#</option>
-                    <option value="2">Java</option>
-                    <option value="3">SQL</option>
-                </select>
-
-                <label class="form-label">Years of Experience</label>
-                <input asp-for="CandidateSkills[i].YearsOfExperience" class="form-control" type="number" />
-                <span asp-validation-for="CandidateSkills[i].YearsOfExperience" class="text-danger"></span>
-            </div>
-        }
+    <div class="mb-3">
+        <label class="form-label">Comments</label>
+        <textarea asp-for="Comments" class="form-control" rows="3" placeholder="Enter comments here..." required></textarea>
+        <span asp-validation-for="Comments" class="text-danger"></span>
     </div>
+
+    <div class="mb-3">
+        <label class="form-label">Skills</label>
+        <select id="skillDropdown" class="form-control">
+            <option value="">Select Skill</option>
+            @foreach (var skill in Model.SkillsList)
+            {
+                <option value="@skill.Value">@skill.Text</option>
+            }
+        </select>
+        <button type="button" class="btn btn-primary mt-2" id="addSkillBtn">Add Skill</button>
+    </div>
+
+    <h4>Selected Skills</h4>
+    <table class="table" id="skillsTable">
+        <thead>
+            <tr>
+                <th>Skill</th>
+                <th>Years of Experience</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id="noSkillsRow">
+                <td colspan="3">No skills selected</td>
+            </tr>
+        </tbody>
+    </table>
 
     <button type="submit" class="btn btn-success">Submit Review</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
 </form>
 
-
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $("#addSkillBtn").click(function () {
+                var selectedSkill = $("#skillDropdown option:selected");
+                var skillId = selectedSkill.val();
+                var skillName = selectedSkill.text();
+
+                if (skillId && $("#skillRow_" + skillId).length == 0) {
+                    $("#noSkillsRow").hide();
+
+                    var newRow = `
+                        <tr id="skillRow_${skillId}">
+                            <td>
+                                <input type="hidden" name="SelectedSkills[${skillId}].SkillID" value="${skillId}" />
+                                ${skillName}
+                            </td>
+                            <td>
+                                <input type="number" name="SelectedSkills[${skillId}].YearsOfExperience" class="form-control" min="0" required />
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger removeSkillBtn" data-skill-id="${skillId}">Remove</button>
+                            </td>
+                        </tr>`;
+
+                    $("#skillsTable tbody").append(newRow);
+                }
+            });
+
+            $(document).on("click", ".removeSkillBtn", function () {
+                var skillId = $(this).data("skill-id");
+                $("#skillRow_" + skillId).remove();
+
+                if ($("#skillsTable tbody tr").length == 0) {
+                    $("#skillsTable tbody").append('<tr id="noSkillsRow"><td colspan="3">No skills selected</td></tr>');
+                }
+            });
+        });
+    </script>
 }

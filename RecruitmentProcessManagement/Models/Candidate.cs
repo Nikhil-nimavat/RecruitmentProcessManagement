@@ -13,7 +13,8 @@ namespace RecruitmentProcessManagement.Models
         [EmailAddress]
         public string Email { get; set; }
 
-        [Phone]
+        [Phone(ErrorMessage = "Please Enter a valid phone number.")]
+        [StringLength(13, MinimumLength = 10)]
         public string PhoneNumber { get; set; }
         public string? ResumePath { get; set; }
 

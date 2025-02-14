@@ -168,11 +168,19 @@ namespace RecruitmentProcessManagement.Controllers
         {
             var extension = System.IO.Path.GetExtension(cvFile.FileName).ToLower();
 
-            if (cvFile == null || cvFile.Length == 0 || extension != ".pdf" || extension != ".doc" || extension != ".docx" || extension != ".txt")
+            // Check if it's a valid file input
+            if (cvFile == null || cvFile.Length == 0)
             {
                 ModelState.AddModelError("cvFile", "Please upload a valid CV file. Please upload a PDF, DOC, or TXT file.");
                 ViewBag.PositionId = positionId;
                 return View(candidate);
+            }
+
+            // Check for valid file extension 
+            if (extension != ".pdf")
+            {
+                TempData["ErrorMessage"] = "Please upload a valid CV file. Please upload a PDF, DOC, or TXT file.";
+                return RedirectToAction("Apply");
             }
 
             // Check if a candidate with the same email already exists
@@ -190,7 +198,8 @@ namespace RecruitmentProcessManagement.Controllers
                 Directory.CreateDirectory(uploadsFolder);
             }
 
-            var uniqueFileName = $"{Guid.NewGuid()}_{cvFile.FileName}";
+            // Giving the file name as user name then resume 
+            var uniqueFileName = $"{candidate.Name}_{cvFile.FileName}";
             var filePath = System.IO.Path.Combine(uploadsFolder, uniqueFileName);
 
             using (var fileStream = new FileStream(filePath, FileMode.Create))

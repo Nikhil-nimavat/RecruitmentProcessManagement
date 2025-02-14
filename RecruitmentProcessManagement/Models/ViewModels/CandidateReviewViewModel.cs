@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace RecruitmentProcessManagement.Models
 {
@@ -6,7 +7,7 @@ namespace RecruitmentProcessManagement.Models
     {
         public int CandidateID { get; set; }
         public int PositionID { get; set; }
-        public int ReviewerID { get; set; }
+        public string ReviewerID { get; set; }
 
         [Required(ErrorMessage = "Comments are required.")]
         [StringLength(1000, ErrorMessage = "Comments cannot exceed 1000 characters.")]
@@ -19,5 +20,6 @@ namespace RecruitmentProcessManagement.Models
         public DateTime ReviewDate { get; set; } = DateTime.Now;
 
         public List<CandidateSkillViewModel> CandidateSkills { get; set; }
+        public SelectList SkillsList { get; set; }
     }
 }

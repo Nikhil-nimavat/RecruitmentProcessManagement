@@ -3,6 +3,8 @@
 <h2>Create Skill</h2>
 
 <form asp-action="CreateSkill" method="post">
+
+    <div asp-validation-summary="All" class="text-danger"></div>
     <div class="mb-3">
         <label class="form-label">Skill Name</label>
         <input asp-for="SkillName" class="form-control" required />

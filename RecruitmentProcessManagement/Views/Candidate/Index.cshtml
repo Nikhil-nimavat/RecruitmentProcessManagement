@@ -1,28 +1,35 @@
-﻿@model List<RecruitmentProcessManagement.Models.Candidate>
+﻿@model IEnumerable<Candidate>
 
-<h2>Candidate List</h2>
+@{
+    ViewData["Title"] = "Candidates List";
+}
+
+<h2>@ViewData["Title"]</h2>
 
 <a href="@Url.Action("Create")" class="btn btn-success">Add New Candidate</a>
 
-@* <table class="table table-bordered mt-3"> *@
-@*     <thead> *@
-@*         <tr> *@
-@*             <th>Name</th> *@
-@*             <th>Email</th> *@
-@*             <th>Phone Number</th> *@
-@*         </tr> *@
-@*     </thead> *@
-@*     <tbody> *@
-@*         @foreach (var candidate in Model) *@
-@*         { *@
-@*             <tr> *@
-@*                 <td>@skill.SkillID</td> *@
-@*                 <td>@skill.SkillName</td> *@
-@*                 <td> *@
-@*                     <a href="@Url.Action("Edit", new { id = skill.SkillID })" class="btn btn-warning">Edit</a> *@
-@*                     <a href="@Url.Action("Delete", new { id = skill.SkillID })" class="btn btn-danger">Delete</a> *@
-@*                 </td> *@
-@*             </tr> *@
-@*         } *@
-@*     </tbody> *@
-@* </table> *@
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var candidate in Model)
+        {
+            <tr>
+                <td>@candidate.Name</td>
+                <td>@candidate.Email</td>
+                <td>@candidate.PhoneNumber</td>
+                <td>
+                    <a href="@Url.Action("Edit", new { id = candidate.CandidateID })" class="btn btn-primary">Edit</a>
+                    <a href="@Url.Action("Delete", new { id = candidate.CandidateID })" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using RecruitmentProcessManagement.Models;
 using RecruitmentProcessManagement.Repository;
 using RecruitmentProcessManagement.Services.Intefaces;
@@ -14,9 +15,10 @@ namespace RecruitmentProcessManagement.Controllers
             _candidateService = candidateService;
         }
 
-        public IActionResult Index()
-        { 
-            return View();
+        public async Task<IActionResult> Index()
+        {
+            var candidates = await _candidateService.GetAllCandidatesAsync();
+            return View(candidates);
         }
 
         [HttpGet]
@@ -25,6 +27,7 @@ namespace RecruitmentProcessManagement.Controllers
             return View();
         }
 
+        [HttpPost]
         public async Task<IActionResult> Create(Candidate candidate)
         {
             if (ModelState.IsValid)
@@ -54,7 +57,7 @@ namespace RecruitmentProcessManagement.Controllers
             if (ModelState.IsValid)
             {
                 await _candidateService.UpdateCandidate(candidate);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
             return View(candidate);
         }
@@ -67,7 +70,6 @@ namespace RecruitmentProcessManagement.Controllers
             {
                 return NotFound();
             }
-
             return View(candidate);
         }
 
@@ -75,7 +77,7 @@ namespace RecruitmentProcessManagement.Controllers
         public async Task<IActionResult> Delete(Candidate candidate)
         {
             await _candidateService.DeleteCandidateById(candidate.CandidateID);
-            return View(nameof(Index));
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
