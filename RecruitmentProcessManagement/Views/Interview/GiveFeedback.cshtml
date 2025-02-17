@@ -1,0 +1,27 @@
+﻿@model RecruitmentProcessManagement.Models.ViewModels.InterviewFeedbackViewModel
+
+@{
+    ViewData["Title"] = "Give Feedback";
+}
+
+<h2>Submit Feedback</h2>
+
+<form asp-action="GiveFeedback" method="post">
+    <input type="hidden" asp-for="InterviewRoundID" />
+    <input type="hidden" asp-for="InterviewID" />
+
+    <div class="mb-3">
+        <label asp-for="Feedback" class="form-label">Feedback</label>
+        <textarea asp-for="Feedback" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Feedback" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Rating" class="form-label">Rating (1-10)</label>
+        <input type="number" asp-for="Rating" class="form-control" min="1" max="10" />
+        <span asp-validation-for="Rating" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <a asp-action="ManageInterviews" class="btn btn-secondary">Cancel</a>
+</form>

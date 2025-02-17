@@ -3,6 +3,8 @@ using System.Net.Mail;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace RecruitmentProcessManagement.Services
 {
@@ -37,6 +39,7 @@ namespace RecruitmentProcessManagement.Services
                 Body = body,
                 IsBodyHtml = false
             };
+            
 
             mailMessage.To.Add(toEmail);
 

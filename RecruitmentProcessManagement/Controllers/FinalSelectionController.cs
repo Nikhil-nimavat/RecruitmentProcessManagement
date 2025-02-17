@@ -55,43 +55,5 @@ namespace RecruitmentProcessManagement.Controllers
             TempData["SuccessMessage"] = "Candidate selected and added to system!";
             return RedirectToAction("HRDashboard");
         }
-
-        // Code without password logic 
-
-        //public async Task<IActionResult> SelectCandidate(int candidateId, int positionId, DateTime joiningDate)
-        //{
-        //    string offerLetterPath = await _finalSelectionService.GenerateOfferLetter(candidateId, positionId, joiningDate);
-
-        //    // Retrieve Candidate Details
-        //    var candidate = await _finalSelectionService.GetCandidateById(candidateId);
-        //    if (candidate == null)
-        //    {
-        //        TempData["ErrorMessage"] = "Candidate not found!";
-        //        return RedirectToAction("HRDashboard");
-        //    }
-
-        //    var existingUser = await _userManager.FindByEmailAsync(candidate.Email);
-        //    if (existingUser == null)
-        //    {
-        //        var newUser = new IdentityUser
-        //        {
-        //            UserName = candidate.Email,
-        //            Email = candidate.Email
-        //        };
-
-        //        var result = await _userManager.CreateAsync(newUser);
-        //        if (!result.Succeeded)
-        //        {
-        //            TempData["ErrorMessage"] = "Error adding candidate to system!";
-        //            return RedirectToAction("HRDashboard");
-        //        }
-        //    }
-
-        //    await _finalSelectionService.MarkCandidateAsHired(candidateId, offerLetterPath);
-
-        //    TempData["SuccessMessage"] = "Candidate selected and added to system!";
-        //    return RedirectToAction("HRDashboard");
-        //}
-
     }
 }

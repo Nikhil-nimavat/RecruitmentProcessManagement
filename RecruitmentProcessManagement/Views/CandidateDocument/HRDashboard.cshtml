@@ -1,4 +1,6 @@
-﻿<h2>Document Verification</h2>
+﻿@model Candidate
+
+<h2>Document Verification</h2>
 
 <form asp-controller="DocumentVerification" asp-action="Verify" method="post">
     <input type="hidden" name="candidateId" value="@Model.CandidateID" />

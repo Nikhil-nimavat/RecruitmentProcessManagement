@@ -10,8 +10,12 @@ namespace RecruitmentProcessManagement.Models.ViewModels
         public string PositionTitle { get; set; }
         public string InterviewType { get; set; }
         public DateTime InterviewDate { get; set; }
-        public string Status { get; set; }
+        public string Status { get; set; }  
         public List<string> Interviewers { get; set; }
         public string Feedback { get; set; }
+
+        public int RoundNumber { get; set; }
+        public int Rating { get; set; }
+        public List<InterviewRoundViewModel> InterviewRounds { get; set; }
     }
 }

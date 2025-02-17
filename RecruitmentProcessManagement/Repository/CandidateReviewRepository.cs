@@ -99,7 +99,10 @@ namespace RecruitmentProcessManagement.Repository
 
         public async Task<List<CandidateReview>> GetCandidateScreeningHistory()
         {
-            return await _context.CandidateReviews.ToListAsync();
+            return await _context.CandidateReviews
+            .Include(r => r.Candidate)
+            .Include(r => r.Position)
+            .ToListAsync();
         }
     }
 }

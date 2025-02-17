@@ -6,7 +6,11 @@ namespace RecruitmentProcessManagement.Models
     public class CandidateReviewViewModel
     {
         public int CandidateID { get; set; }
+        public string CandidateName { get; set; }
+
         public int PositionID { get; set; }
+        public string JobTitle { get; set; }
+
         public string ReviewerID { get; set; }
 
         [Required(ErrorMessage = "Comments are required.")]
@@ -18,6 +22,8 @@ namespace RecruitmentProcessManagement.Models
 
         [DataType(DataType.Date)]
         public DateTime ReviewDate { get; set; } = DateTime.Now;
+
+        //public Candidate candidate { get; set; }
 
         public List<CandidateSkillViewModel> CandidateSkills { get; set; }
         public SelectList SkillsList { get; set; }

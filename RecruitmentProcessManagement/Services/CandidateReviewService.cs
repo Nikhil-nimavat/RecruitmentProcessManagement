@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.EntityFrameworkCore;
 using RecruitmentProcessManagement.Data;
 using RecruitmentProcessManagement.Models;
 using RecruitmentProcessManagement.Repository.Interfaces;
@@ -70,6 +71,5 @@ namespace RecruitmentProcessManagement.Services
         {
             return await _reviewRepository.GetCandidateScreeningHistory();
         }
-
     }
 }

@@ -13,18 +13,38 @@
             <p><strong>Position:</strong> @Model.PositionTitle</p>
             <p><strong>Interview Type:</strong> @Model.InterviewType</p>
             <p><strong>Date & Time:</strong> @Model.InterviewDate.ToString("f")</p>
-            <p><strong>Status:</strong> <span class="badge bg-@(Model.Status == "Completed" ? "success" : "warning")">@Model.Status</span></p>
-            @* <p><strong>Interviewers:</strong> @(Model.Interviewers?.Any() == true ? Model.Interviewers.ToString() : "Not Assigned")</p> *@
+            <p>
+                <strong>Status:</strong>
+                <span class="badge bg-@(Model.Status == "Completed" ? "success" : "warning")">
+                    @Model.Status
+                </span>
+            </p>
 
-            @if (!string.IsNullOrEmpty(Model.Feedback)) 
-             { 
-                 <h5>Feedback</h5> 
-                 <p>@Model.Feedback</p> 
-             }
-
-            @if (User.IsInRole("Interviewer") && Model.Status == "Scheduled")
+            @if (Model.InterviewRounds != null && Model.InterviewRounds.Any())
             {
-                <a asp-action="GiveFeedback" asp-route-id="@Model.InterviewId" class="btn btn-primary">Submit Feedback</a>
+                var round = Model.InterviewRounds.FirstOrDefault(); 
+
+                if (round != null)
+                {
+                    <h4 class="mt-4">Interview Feedback</h4>
+
+                    @if (!string.IsNullOrEmpty(round.Feedback))
+                    {
+                        <p><strong>Feedback:</strong> @round.Feedback</p>
+                        <p><strong>Rating:</strong> @round.Rating / 10</p>
+                    }
+                    else
+                    {
+                        <p><strong>Feedback:</strong> Not provided yet</p>
+                    }
+                }
+            }
+
+            @if (User.IsInRole("Interviewer") || User.IsInRole("Admin"))
+            {
+                <a asp-action="GiveFeedback" asp-route-id="@Model.InterviewId" class="btn btn-primary mt-3">
+                    Submit Feedback
+                </a>
             }
         </div>
     </div>

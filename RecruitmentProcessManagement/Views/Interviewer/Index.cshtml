@@ -31,7 +31,7 @@
                 <td>@interviewer.ExperienceYears</td>
                 <td>@interviewer.CreatedDate.ToString("yyyy-MM-dd")</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@interviewer.InterviewerID" class="btn btn-warning">Edit</a>
+                    <a asp-action="Edit" asp-route-id="@interviewer.InterviewerID" class="btn btn-warning btn-sm">Edit</a>
                     <a href="@Url.Action("Delete", new { id = interviewer.InterviewerID })" class="btn btn-danger btn-sm">Delete</a>
                 </td>
             </tr>

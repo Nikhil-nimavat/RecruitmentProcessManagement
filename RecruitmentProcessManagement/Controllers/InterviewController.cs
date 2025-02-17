@@ -36,93 +36,113 @@ namespace RecruitmentProcessManagement.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ManageInterviews()
         {
-            var interviews = await _context.Interviews
-                .Include(i => i.Candidate)
-                .Include(i => i.Position)
-                .Select(i => new ManageInterviewsViewModel
+            var interviews = await _context.InterviewRounds
+                .Include(ir => ir.Interview)
+                    .ThenInclude(i => i.Candidate)
+                .Include(ir => ir.Interview)
+                    .ThenInclude(i => i.Position)
+                .Select(ir => new ManageInterviewsViewModel
                 {
-                    InterviewId = i.InterviewID,
-                    CandidateName = i.Candidate.Name,
-                    PositionTitle = i.Position.JobTitle,
-                    InterviewDate = i.InterviewDate,
-                    InterviewType = i.InterviewType,
-                    Status = i.Status
-                }).ToListAsync();
+                    InterviewId = ir.Interview.InterviewID,
+                    CandidateName = ir.Interview.Candidate.Name,
+                    PositionTitle = ir.Interview.Position.JobTitle,
+                    InterviewDate = ir.Interview.InterviewDate,
+                    InterviewType = ir.RoundType,
+                    Status = ir.Interview.Status,
+                    RoundNumber = ir.RoundNumber
+                })
+                .OrderBy(ir => ir.CandidateName)
+                .ThenBy(ir => ir.RoundNumber)
+                .ToListAsync();
 
             return View(interviews);
         }
-
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> InterviewDetails(int interviewId)
+        public async Task<IActionResult> InterviewDetails(int interviewId, int roundNumber)
         {
-            var interview = await _context.Interviews
-                .Include(i => i.Candidate)
-                .Include(i => i.Position)
-                .Include(i => i.InterviewRounds)
-                .ThenInclude(ir => ir.InterviewRoundInterviewers)
-                .ThenInclude(iri => iri.Interviewer)
-                .FirstOrDefaultAsync(i => i.InterviewID == interviewId);
+            var interviewRound = await _context.InterviewRounds
+                .Include(ir => ir.Interview)
+                    .ThenInclude(i => i.Candidate)
+                .Include(ir => ir.Interview)
+                    .ThenInclude(i => i.Position)
+                .Include(ir => ir.InterviewRoundInterviewers)
+                    .ThenInclude(iri => iri.Interviewer)
+                .FirstOrDefaultAsync(ir => ir.InterviewID == interviewId && ir.RoundNumber == roundNumber);
 
-            if (interview == null)
+            if (interviewRound == null)
             {
-                TempData["ErrorMessage"] = "Interview not found.";
+                TempData["ErrorMessage"] = "Interview round not found.";
                 return RedirectToAction("ManageInterviews");
             }
 
-            // Error code we need change it to the interviewer
-            var interviewers = interview.InterviewRounds
-                .SelectMany(ir => ir.InterviewRoundInterviewers)
+            var interviewers = interviewRound.InterviewRoundInterviewers
                 .Select(iri => iri.Interviewer.FullName)
+                .Distinct()
                 .ToList();
-
 
             var model = new InterviewDetailsViewModel
             {
-                InterviewId = interview.InterviewID,
-                CandidateName = interview.Candidate.Name,
-                PositionTitle = interview.Position.JobTitle,
-                InterviewType = interview.InterviewType,
-                InterviewDate = interview.InterviewDate,
-                Status = interview.Status,
+                InterviewId = interviewRound.InterviewID,
+                CandidateName = interviewRound.Interview.Candidate.Name,
+                PositionTitle = interviewRound.Interview.Position.JobTitle,
+                InterviewType = interviewRound.RoundType,
+                InterviewDate = interviewRound.Interview.InterviewDate,
+                Status = interviewRound.Feedback,
                 Interviewers = interviewers,
-                Feedback = interview.Feedback?.ToString() ?? "Not Provided"
+                Feedback = interviewRound.Feedback ?? "Not Provided",
+                Rating = interviewRound.Rating,
+                RoundNumber = roundNumber
             };
 
             return View(model);
-
-            //var interview = await _context.Interviews
-            //.Include(i => i.Candidate)
-            //.Include(i => i.Position)
-            //.FirstOrDefaultAsync(i => i.InterviewID == interviewId);
-
-            //if (interview == null)
-            //{
-            //    TempData["ErrorMessage"] = "Interview not found.";
-            //    return RedirectToAction("ManageInterviews");
-            //}
-
-            //var interviewers = await _context.Interviewers
-            //    .Where(ii => ii.InterviewerID == interviewId)
-            //    .Include(ii => ii.InterviewerID)
-            //    .Select(ii => ii.FullName)
-            //    .ToListAsync();
-
-            //var model = new InterviewDetailsViewModel
-            //{
-            //    InterviewId = interview.InterviewID,
-            //    CandidateName = interview.Candidate.Name,
-            //    PositionTitle = interview.Position.JobTitle,
-            //    InterviewType = interview.InterviewType,
-            //    InterviewDate = interview.InterviewDate,
-            //    Status = interview.Status,
-            //    Interviewers = interviewers,
-            //    Feedback = interview.Feedback?.ToString() ?? "Not Provided"
-            //};
-
-            //return View(model);
-
         }
+
+
+        //[HttpGet]
+        //[Authorize(Roles = "Admin")]
+        //public async Task<IActionResult> InterviewDetails(int interviewId, int roundNumber)
+        //{
+        //    var interview = await _context.Interviews
+        //        .Include(i => i.Candidate)
+        //        .Include(i => i.Position)
+        //        .Include(i => i.InterviewRounds)
+        //            .ThenInclude(ir => ir.InterviewRoundInterviewers)
+        //            .ThenInclude(iri => iri.Interviewer)
+        //        .FirstOrDefaultAsync(i => i.InterviewID == interviewId);
+
+        //    if (interview == null)
+        //    {
+        //        TempData["ErrorMessage"] = "Interview not found.";
+        //        return RedirectToAction("ManageInterviews");
+        //    }
+
+        //    var interviewers = interview.InterviewRounds
+        //        .SelectMany(ir => ir.InterviewRoundInterviewers)
+        //        .Select(iri => iri.Interviewer.FullName)
+        //        .Distinct()
+        //        .ToList();
+
+        //    var selectedRound = interview.InterviewRounds
+        //        .FirstOrDefault(ir => ir.RoundNumber == roundNumber);
+
+        //    var model = new InterviewDetailsViewModel
+        //    {
+        //        InterviewId = interview.InterviewID,
+        //        CandidateName = interview.Candidate.Name,
+        //        PositionTitle = interview.Position.JobTitle,
+        //        InterviewType = interview.InterviewType,
+        //        InterviewDate = interview.InterviewDate,
+        //        Status = interview.Status,
+        //        Interviewers = interviewers,
+        //        Feedback = selectedRound?.Feedback ?? "Not Provided",
+        //        Rating = selectedRound?.Rating ?? 0,
+        //        RoundNumber = roundNumber
+        //    };
+
+        //    return View(model);
+        //}
+
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
@@ -271,62 +291,6 @@ namespace RecruitmentProcessManagement.Controllers
             return RedirectToAction("ManageInterviews");
         }
 
-        //public async Task<IActionResult> ScheduleInterview(Models.ViewModels.ScheduleInterviewViewModel model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        model.Candidates = await _context.Candidates
-        //            .Select(c => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
-        //            {
-        //                Value = c.CandidateID.ToString(),
-        //                Text = c.Name
-        //            }).ToListAsync();
-
-        //        model.Positions = await _context.Positions
-        //            .Select(p => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
-        //            {
-        //                Value = p.PositionID.ToString(),
-        //                Text = p.JobTitle
-        //            }).ToListAsync();
-
-        //        model.Interviewers = await _context.Interviewers
-        //            .Select(i => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
-        //            {
-        //                Value = i.InterviewerID.ToString(),
-        //                Text = i.FullName
-        //            }).ToListAsync();
-
-        //        return View(model);
-        //    }
-
-        //    var interview = new Interview
-        //    {
-        //        CandidateID = model.CandidateId,
-        //        PositionID = model.PositionId,
-        //        InterviewType = model.InterviewType,
-        //        InterviewDate = model.InterviewDate,
-        //        Status = "Scheduled"
-        //    };
-
-        //    _context.Interviews.Add(interview);
-        //    await _context.SaveChangesAsync();
-
-        //    //foreach (var interviewerId in model.InterviewerIds)
-        //    //{
-        //    //    _context.InterviewFeedbacks.Add(new InterviewFeedback
-        //    //    {
-        //    //        InterviewRoundID = interview.InterviewID,
-        //    //        InterviewerID = interviewerId
-        //    //    });
-        //    //}
-        //    //await _context.SaveChangesAsync();
-
-        //    await _interviewService.SendMeetingInvites(model.CandidateId, model.InterviewerIds, model.InterviewDate);
-
-        //    TempData["SuccessMessage"] = "Interview scheduled successfully. Emails sent!";
-        //    return RedirectToAction("ManageInterviews");
-        //}
-
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DefineInterviewRounds(int positionId, List<string> roundTypes)
@@ -369,7 +333,6 @@ namespace RecruitmentProcessManagement.Controllers
 
             return Json(interviews);
         }
-
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
@@ -423,7 +386,6 @@ namespace RecruitmentProcessManagement.Controllers
             return RedirectToAction("ManageInterviews");
         }
 
-
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> BulkScheduleInterviews(List<int> candidateIds, int positionId, DateTime interviewDate)
@@ -445,5 +407,52 @@ namespace RecruitmentProcessManagement.Controllers
             return RedirectToAction("ManageInterviews", new { positionId });
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Interviewer, Admin")]
+        public async Task<IActionResult> GiveFeedback(int id)
+        {
+            var interviewRound = await _context.InterviewRounds
+                .FirstOrDefaultAsync(r => r.InterviewRoundID == id);
+
+            if (interviewRound == null)
+            {
+                return NotFound();
+            }
+
+            var model = new InterviewFeedbackViewModel
+            {
+                InterviewRoundID = interviewRound.InterviewRoundID,
+                InterviewID = interviewRound.InterviewID
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Interviewer, Admin")]
+        public async Task<IActionResult> GiveFeedback(InterviewFeedbackViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var interviewRound = await _context.InterviewRounds
+                .FirstOrDefaultAsync(r => r.InterviewID == model.InterviewID);
+
+            if (interviewRound == null)
+            {
+                return NotFound();
+            }
+
+            interviewRound.Feedback = model.Feedback;
+            interviewRound.Rating = model.Rating;
+
+            _context.Update(interviewRound);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Feedback submitted successfully!";
+            return RedirectToAction("InterviewDetails");
+        }
     }
 }

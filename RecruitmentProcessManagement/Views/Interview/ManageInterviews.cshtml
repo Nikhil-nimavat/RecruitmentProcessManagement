@@ -20,6 +20,7 @@
         <tr>
             <th>Candidate</th>
             <th>Position</th>
+            <th>Round</th>
             <th>Interview Date</th>
             <th>Type</th>
             <th>Status</th>
@@ -34,7 +35,8 @@
                 <tr>
                     <td>@interview.CandidateName</td>
                     <td>@interview.PositionTitle</td>
-                    <td>@interview.InterviewDate</td>
+                    <td>@interview.RoundNumber</td>
+                    <td>@interview.InterviewDate.ToString("yyyy-MM-dd")</td>
                     <td>@interview.InterviewType</td>
                     <td>
                         <span class="badge bg-@(interview.Status == "Completed" ? "success" : "warning")">
@@ -69,7 +71,7 @@
     </tbody>
 </table>
 
-<!-- Reschedule Modal -->
+@* Reschedule Component  *@
 <div class="modal fade" id="rescheduleModal" tabindex="-1" aria-labelledby="rescheduleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -92,6 +94,8 @@
     </div>
 </div>
 
+
+@* Add this to root folder after testing *@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         var rescheduleModal = document.getElementById('rescheduleModal');

@@ -19,8 +19,8 @@
         @foreach (var review in Model)
         {
             <tr>
-                <td>@review.CandidateID</td> 
-                <td>@review.PositionID</td> 
+                <td>@review.CandidateName</td> 
+                <td>@review.JobTitle</td> 
                 <td>
                     <span class="badge @(review.Status == "Shortlisted" ? "bg-success" : "bg-warning")">
                         @review.Status
