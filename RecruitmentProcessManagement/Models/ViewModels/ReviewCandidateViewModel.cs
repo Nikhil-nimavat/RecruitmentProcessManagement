@@ -4,6 +4,7 @@ namespace RecruitmentProcessManagement.Models.ViewModels
 {
     public class ReviewCandidateViewModel
     {
+        public int ReviewID { get; set; }
         public int CandidateId { get; set; }
         public List<SelectListItem> Candidates { get; set; } = new List<SelectListItem>();
 
@@ -16,11 +17,11 @@ namespace RecruitmentProcessManagement.Models.ViewModels
 
         public string CurrentStatus { get; set; }
         public List<SelectListItem> StatusOptions { get; set; } = new List<SelectListItem>
-    {
-        new SelectListItem { Value = "Selected", Text = "Selected" },
-        new SelectListItem { Value = "Rejected", Text = "Rejected" },
-        new SelectListItem { Value = "On Hold", Text = "On Hold" }
-    };
+        {
+            new SelectListItem { Value = "Selected", Text = "Selected" },
+            new SelectListItem { Value = "Rejected", Text = "Rejected" },
+            new SelectListItem { Value = "On Hold", Text = "On Hold" }
+        };
 
         public List<SelectListItem> SkillsList { get; set; } = new List<SelectListItem>();
         public List<CandidateSkillViewModel> SelectedSkills { get; set; } = new List<CandidateSkillViewModel>();

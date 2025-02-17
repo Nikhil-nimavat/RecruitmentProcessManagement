@@ -12,7 +12,9 @@
             <h4>@Model.CandidateName</h4>
             <p><strong>Position:</strong> @Model.PositionTitle</p>
             <p><strong>Interview Type:</strong> @Model.InterviewType</p>
-            <p><strong>Date & Time:</strong> @Model.InterviewDate.ToString("f")</p>
+            <p><strong>Date & Time:</strong> @Model.InterviewDate.ToString("yyyy-MM-dd")</p>
+            <p><strong>Feedback:</strong> @Model.Feedback</p>
+            <p><strong>Rating:</strong> @Model.Rating / 10</p>
             <p>
                 <strong>Status:</strong>
                 <span class="badge bg-@(Model.Status == "Completed" ? "success" : "warning")">

@@ -1,29 +1,16 @@
 ﻿@model RecruitmentProcessManagement.Models.ViewModels.ReviewCandidateViewModel
 
 @{
-    ViewData["Title"] = "Review Candidate";
+    ViewData["Title"] = "Edit Candidate Review";
 }
 
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">
-        @TempData["ErrorMessage"]
-    </div>
-}
+<h2>Edit Candidate Review</h2>
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["SuccessMessage"]
-    </div>
-}
-
-
-<h2>Review Candidate</h2>
-
-<form asp-action="SubmitReview" method="post">
+<form asp-action="EditReview" method="post">
+    <input type="hidden" asp-for="ReviewID" />
 
     <div asp-validation-summary="All" class="text-danger"></div>
+
     <div class="mb-3">
         <label class="form-label">Candidate</label>
         <select asp-for="CandidateId" asp-items="Model.Candidates" class="form-control" required>
@@ -73,13 +60,34 @@
             </tr>
         </thead>
         <tbody>
-            <tr id="noSkillsRow">
-                <td colspan="3">No skills selected</td>
-            </tr>
+            @if (Model.SelectedSkills.Any())
+            {
+                @foreach (var skill in Model.SelectedSkills)
+                {
+                    <tr id="skillRow_@skill.SkillID">
+                        <td>
+                            <input type="hidden" name="SelectedSkills[@skill.SkillID].SkillID" value="@skill.SkillID" />
+                            @skill.
+                        </td>
+                        <td>
+                            <input type="number" name="SelectedSkills[@skill.SkillID].YearsOfExperience" class="form-control" min="0" value="@skill.YearsOfExperience" required />
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger removeSkillBtn" data-skill-id="@skill.SkillID">Remove</button>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr id="noSkillsRow">
+                    <td colspan="3">No skills selected</td>
+                </tr>
+            }
         </tbody>
     </table>
 
-    <button type="submit" class="btn btn-success">Submit Review</button>
+    <button type="submit" class="btn btn-success">Update Review</button>
     <a asp-action="Index" class="btn btn-secondary">Cancel</a>
 </form>
 
@@ -115,10 +123,6 @@
             $(document).on("click", ".removeSkillBtn", function () {
                 var skillId = $(this).data("skill-id");
                 $("#skillRow_" + skillId).remove();
-
-                if ($("#skillsTable tbody tr").length == 0) {
-                    $("#skillsTable tbody").append('<tr id="noSkillsRow"><td colspan="3">No skills selected</td></tr>');
-                }
             });
         });
     </script>

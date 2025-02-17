@@ -44,6 +44,7 @@ namespace RecruitmentProcessManagement.Controllers
 
         //    return View(reviewViewModels);
         //}
+
         [HttpGet]
         [Authorize(Roles = "Admin, Reviewer")]
         public async Task<IActionResult> Index()
@@ -147,6 +148,15 @@ namespace RecruitmentProcessManagement.Controllers
                 return View(model);
             }
 
+            var existingReview = await _context.CandidateReviews
+                .FirstOrDefaultAsync(r => r.CandidateID == model.CandidateId && r.PositionID == model.PositionId);
+
+            if (existingReview != null)
+            {
+                TempData["ErrorMessage"] = "A review for this candidate and position already exists.";
+                return RedirectToAction("ReviewCandidate");
+            }
+
             var review = new CandidateReview
             {
                 CandidateID = model.CandidateId,
@@ -178,6 +188,7 @@ namespace RecruitmentProcessManagement.Controllers
             return RedirectToAction("Index");
         }
 
+
         [HttpPost]
         [Authorize(Roles = "Admin, Reviewer")]
         public IActionResult StartReview(CandidateReviewSelectionViewModel model)
@@ -195,147 +206,127 @@ namespace RecruitmentProcessManagement.Controllers
             });
         }
 
-        //[HttpGet]
-        //[Authorize(Roles = "Admin, Reviewer")]
-        //public async Task<IActionResult> EditReview(int candidateId, int positionId)
-        //{
-        //    var review = await _context.CandidateReviews
-        //        .FirstOrDefaultAsync(r => r.CandidateID == candidateId && r.PositionID == positionId);
+        [HttpGet]
+        [Authorize(Roles = "Admin, Reviewer")]
+        public async Task<IActionResult> EditReview(int candidateId, int positionId)
+        {
+            var review = await _context.CandidateReviews
+                .Include(r => r.Candidate)
+                .Include(r => r.Position)
+                .FirstOrDefaultAsync(r => r.CandidateID == candidateId && r.PositionID == positionId);
 
-        //    if (review == null)
-        //    {
-        //        TempData["ErrorMessage"] = "Review not found for the selected candidate and position.";
-        //        return RedirectToAction("Index");
-        //    }
+            if (review == null)
+            {
+                return NotFound();
+            }
 
-        //    var model = new ReviewCandidateViewModel
-        //    {
-        //        CandidateId = candidateId,
-        //        PositionId = positionId,
-        //        Comments = review.Comments,
-        //        CurrentStatus = review.Status,
-        //        SelectedSkills = await _context.CandidateSkills
-        //            .Where(cs => cs.CandidateID == candidateId)
-        //            .Select(cs => new CandidateSkillViewModel
-        //            {
-        //                SkillID = cs.SkillID,
-        //                YearsOfExperience = cs.YearsOfExperience
-        //            }).ToListAsync()
-        //    };
+            var model = new ReviewCandidateViewModel
+            {
+                ReviewID = review.ReviewID,
+                CandidateId = review.CandidateID,
+                PositionId = review.PositionID,
+                CurrentStatus = review.Status,
+                Comments = review.Comments,
 
-        //    model.Candidates = await _context.Candidates
-        //        .Select(c => new SelectListItem
-        //        {
-        //            Value = c.CandidateID.ToString(),
-        //            Text = c.Name
-        //        }).ToListAsync();
+                Candidates = await _context.Candidates
+                    .Select(c => new SelectListItem
+                    {
+                        Value = c.CandidateID.ToString(),
+                        Text = c.Name,
+                        Selected = c.CandidateID == review.CandidateID
+                    }).ToListAsync(),
 
-        //    model.Positions = await _context.Positions
-        //        .Select(p => new SelectListItem
-        //        {
-        //            Value = p.PositionID.ToString(),
-        //            Text = p.JobTitle
-        //        }).ToListAsync();
+                Positions = await _context.Positions
+                    .Select(p => new SelectListItem
+                    {
+                        Value = p.PositionID.ToString(),
+                        Text = p.JobTitle,
+                        Selected = p.PositionID == review.PositionID
+                    }).ToListAsync(),
 
-        //    model.SkillsList = await _context.Skills
-        //        .Select(s => new SelectListItem
-        //        {
-        //            Value = s.SkillID.ToString(),
-        //            Text = s.SkillName
-        //        }).ToListAsync();
+                SkillsList = await _context.Skills
+                    .Select(s => new SelectListItem
+                    {
+                        Value = s.SkillID.ToString(),
+                        Text = s.SkillName
+                    }).ToListAsync(),
 
-        //    return View("ReviewCandidate", model);
-        //}
+                SelectedSkills = await _context.CandidateSkills
+                    .Where(cs => cs.CandidateID == review.CandidateID)
+                    .Select(cs => new CandidateSkillViewModel
+                    {
+                        SkillID = cs.SkillID,
+                        YearsOfExperience = cs.YearsOfExperience
+                    }).ToListAsync()
+            };
 
-        // Updated with edit review
-        //[HttpPost]
-        //[Authorize(Roles = "Admin, Reviewer")]
-        //public async Task<IActionResult> SubmitReview(ReviewCandidateViewModel model)
-        //{
-        //    var reviewerId = _userManager.GetUserId(User);
+            return View(model);
+        }
 
-        //    if (string.IsNullOrEmpty(reviewerId))
-        //    {
-        //        return Unauthorized();
-        //    }
+        [HttpPost]
+        [Authorize(Roles = "Admin, Reviewer")]
+        public async Task<IActionResult> EditReview(ReviewCandidateViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                model.Candidates = await _context.Candidates
+                    .Select(c => new SelectListItem
+                    {
+                        Value = c.CandidateID.ToString(),
+                        Text = c.Name
+                    }).ToListAsync();
 
-        //    if (!ModelState.IsValid)
-        //    {
-        //        model.Candidates = await _context.Candidates
-        //            .Select(c => new SelectListItem
-        //            {
-        //                Value = c.CandidateID.ToString(),
-        //                Text = c.Name
-        //            }).ToListAsync();
+                model.Positions = await _context.Positions
+                    .Select(p => new SelectListItem
+                    {
+                        Value = p.PositionID.ToString(),
+                        Text = p.JobTitle
+                    }).ToListAsync();
 
-        //        model.Positions = await _context.Positions
-        //            .Select(p => new SelectListItem
-        //            {
-        //                Value = p.PositionID.ToString(),
-        //                Text = p.JobTitle
-        //            }).ToListAsync();
+                model.SkillsList = await _context.Skills
+                    .Select(s => new SelectListItem
+                    {
+                        Value = s.SkillID.ToString(),
+                        Text = s.SkillName
+                    }).ToListAsync();
 
-        //        model.SkillsList = await _context.Skills
-        //            .Select(s => new SelectListItem
-        //            {
-        //                Value = s.SkillID.ToString(),
-        //                Text = s.SkillName
-        //            }).ToListAsync();
+                return View(model);
+            }
 
-        //        return View("ReviewCandidate", model);
-        //    }
+            var review = await _context.CandidateReviews
+                .FirstOrDefaultAsync(r => r.CandidateID == model.CandidateId && r.PositionID == model.PositionId);
 
-        //    // Check if the review already exists
-        //    var existingReview = await _context.CandidateReviews
-        //        .FirstOrDefaultAsync(r => r.CandidateID == model.CandidateId && r.PositionID == model.PositionId);
+            if (review == null)
+            {
+                return NotFound();
+            }
 
-        //    if (existingReview != null)
-        //    {
-        //        // Update existing review
-        //        existingReview.Comments = model.Comments;
-        //        existingReview.Status = model.CurrentStatus;
-        //        existingReview.ReviewDate = DateTime.Now;
+            review.Comments = model.Comments;
+            review.Status = model.CurrentStatus;
+            review.ReviewDate = DateTime.Now;
 
-        //        _context.CandidateReviews.Update(existingReview);
-        //    }
-        //    else
-        //    {
-        //        // Create new review
-        //        var review = new CandidateReview
-        //        {
-        //            CandidateID = model.CandidateId,
-        //            PositionID = model.PositionId,
-        //            ReviewerID = reviewerId,
-        //            ReviewDate = DateTime.Now,
-        //            Comments = model.Comments,
-        //            Status = model.CurrentStatus
-        //        };
+            _context.CandidateReviews.Update(review);
+            await _context.SaveChangesAsync();
 
-        //        _context.CandidateReviews.Add(review);
-        //    }
+            var existingSkills = _context.CandidateSkills.Where(cs => cs.CandidateID == model.CandidateId);
+            _context.CandidateSkills.RemoveRange(existingSkills);
 
-        //    await _context.SaveChangesAsync();
+            foreach (var skill in model.SelectedSkills)
+            {
+                var candidateSkill = new CandidateSkill
+                {
+                    CandidateID = model.CandidateId,
+                    SkillID = skill.SkillID,
+                    YearsOfExperience = skill.YearsOfExperience
+                };
+                _context.CandidateSkills.Add(candidateSkill);
+            }
 
-        //    // Update skills
-        //    foreach (var skill in model.SelectedSkills)
-        //    {
-        //        var candidateSkill = new CandidateSkill
-        //        {
-        //            CandidateID = model.CandidateId,
-        //            SkillID = skill.SkillID,
-        //            YearsOfExperience = skill.YearsOfExperience
-        //        };
+            await _context.SaveChangesAsync();
 
-        //        _context.CandidateSkills.Add(candidateSkill);
-        //    }
-
-        //    await _context.SaveChangesAsync();
-
-        //    TempData["SuccessMessage"] = "Review submitted successfully!";
-        //    return RedirectToAction("Index");
-        //}
-
-
+            TempData["SuccessMessage"] = "Review updated successfully!";
+            return RedirectToAction("Index");
+        }
 
     }
 }

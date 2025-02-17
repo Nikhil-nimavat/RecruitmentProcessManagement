@@ -88,7 +88,7 @@ namespace RecruitmentProcessManagement.Controllers
                 PositionTitle = interviewRound.Interview.Position.JobTitle,
                 InterviewType = interviewRound.RoundType,
                 InterviewDate = interviewRound.Interview.InterviewDate,
-                Status = interviewRound.Feedback,
+                Status = interviewRound.Interview.Status,
                 Interviewers = interviewers,
                 Feedback = interviewRound.Feedback ?? "Not Provided",
                 Rating = interviewRound.Rating,
@@ -97,7 +97,6 @@ namespace RecruitmentProcessManagement.Controllers
 
             return View(model);
         }
-
 
         //[HttpGet]
         //[Authorize(Roles = "Admin")]

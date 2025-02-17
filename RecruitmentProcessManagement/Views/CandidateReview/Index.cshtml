@@ -4,7 +4,7 @@
     ViewData["Title"] = "Candidate Reviews";
 }
 
-<h2 class="mb-4">Candidate Reviews</h2>
+<h2 class="mb-4">Candidate Reviews History</h2>
 
 <table class="table table-bordered table-hover">
     <thead>
@@ -27,12 +27,12 @@
                     </span>
                 </td>
                 <td>@review.ReviewDate.ToString("yyyy-MM-dd")</td>
-                @* <td> *@
-                @*     <a asp-action="ReviewCandidate" asp-route-candidateId="@review.CandidateID" *@
-                @*        asp-route-positionId="@review.PositionID" class="btn btn-primary btn-sm"> *@
-                @*         Review *@
-                @*     </a> *@
-                @* </td> *@
+                <td>
+                    <a asp-action="EditReview" asp-route-candidateId="@review.CandidateID"
+                       asp-route-positionId="@review.PositionID" class="btn btn-primary btn-sm"> 
+                         Update Review 
+                     </a> 
+                 </td>
             </tr>
         }
     </tbody>
