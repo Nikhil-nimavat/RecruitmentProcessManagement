@@ -21,6 +21,7 @@ namespace RecruitmentProcessManagement.Models.ViewModels
         public string InterviewType { get; set; }
 
         [Required]
+        [DataType(DataType.Date)]
         public DateTime InterviewDate { get; set; }
 
         [Required(ErrorMessage ="At least one Interviewer must be selected")]

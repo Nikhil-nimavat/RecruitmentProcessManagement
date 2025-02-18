@@ -75,7 +75,7 @@ namespace RecruitmentProcessManagement.Services
             //    throw new Exception("Invalid candidate or interviewers.");
             //}
 
-            string subject = "Interview Scheduled - " + interviewDate.ToString("yyyy-MM-dd HH:mm");
+            string subject = "Interview Scheduled - " + interviewDate.ToString("yyyy-MM-dd");
             string body = $"Dear {candidate.Name},\n\nYou have an interview scheduled on {interviewDate}. \nPlease be prepared.\n\nBest regards,\nHR Team";
 
             await _emailService.SendEmailAsync(candidate.Email, subject, body);

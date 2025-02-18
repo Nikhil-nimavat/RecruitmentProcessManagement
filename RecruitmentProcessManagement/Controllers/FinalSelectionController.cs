@@ -39,7 +39,6 @@ namespace RecruitmentProcessManagement.Controllers
                     Email = candidate.Email
                 };
 
-                // Assign default password Static for now then user can change it later on
                 string defaultPassword = "Test#@123";
                 var result = await _userManager.CreateAsync(newUser, defaultPassword);
 

@@ -1,43 +1,132 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using RecruitmentProcessManagement.Data;
 using RecruitmentProcessManagement.Models;
+using RecruitmentProcessManagement.Services;
 using RecruitmentProcessManagement.Services.Intefaces;
+using System.Security.Claims;
 
 namespace RecruitmentProcessManagement.Controllers
 {
+    [Authorize]
     public class CandidateDocumentController : Controller
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ICandidateDocumentService _candidateDocumentService;
+        private readonly ICandidateService _candidateService;
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public CandidateDocumentController(IWebHostEnvironment webHostEnvironment, ICandidateDocumentService candidateDocumentService)
+        public CandidateDocumentController(
+            IWebHostEnvironment webHostEnvironment,
+            ICandidateDocumentService candidateDocumentService,
+            ICandidateService candidateService,
+            ApplicationDbContext context,
+            UserManager<IdentityUser> userManager)
         {
             _webHostEnvironment = webHostEnvironment;
             _candidateDocumentService = candidateDocumentService;
-        }
- 
-        [HttpGet]
-        public IActionResult CandidateDashboard()
-        {
-            return View();
+            _context = context;
+            _userManager = userManager;
+            _candidateService = candidateService;
         }
 
         [HttpGet]
         [Authorize(Roles = "Admin, HR")]
-        public IActionResult HRDashboard()
+        public async Task<IActionResult> DocumentVerificationList()
         {
+            var selectedCandidates = await _context.CandidateReviews
+                .Where(cr => cr.Status == "Selected")
+                .Include(cr => cr.Candidate)
+                .Select(cr => cr.Candidate)
+                .Distinct()
+                .ToListAsync();
 
+            return View(selectedCandidates);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin, HR")]
+        public async Task<IActionResult> VerifyDocuments(int candidateId)
+        {
+            var candidate = await _context.Candidates
+                .Include(c => c.CandidateDocuments)
+                .FirstOrDefaultAsync(c => c.CandidateID == candidateId);
+
+            if (candidate == null)
+            {
+                return NotFound();
+            }
+
+            return View(candidate);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin, HR")]
+        public async Task<IActionResult> Verify(int candidateId, string verificationStatus)
+        {
+            var candidate = await _context.Candidates.Include(c => c.CandidateDocuments).FirstOrDefaultAsync(c => c.CandidateID == candidateId);
+            if (candidate == null)
+            {
+                return NotFound();
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var documentVerification = new DocumentVerification
+            {
+                CandidateID = candidateId,
+                VerificationStatus = verificationStatus,
+                VerificationDate = DateTime.Now,
+                VerifiedBy = userId
+            };
+
+            _context.DocumentVerifications.Add(documentVerification);
+            await _context.SaveChangesAsync();
+
+            foreach (var doc in candidate.CandidateDocuments)
+            {
+                doc.VerificationStatus = verificationStatus;
+            }
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Document verification updated successfully!";
+            return RedirectToAction("DocumentVerificationList");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> UploadDocuments()
+        {
             return View();
         }
 
         [HttpPost]
-        [AllowAnonymous]
-        public async Task<IActionResult> Upload(int candidateId, IFormFile documentFile, string documentType)
+        public async Task<IActionResult> Upload(IFormFile documentFile, string documentType)
         {
+
+            var userEmail = User.Identity.Name;
+
+            var candidate = await _candidateService.GetCandidateByEmail(userEmail);
+
+            if (candidate == null)
+            {
+                TempData["ErrorMessage"] = "Candidate profile not found.";
+                return RedirectToAction("UploadDocuments");
+            }
+
+            int candidateId = candidate.CandidateID;
+
             if (documentFile == null || documentFile.Length == 0)
             {
                 TempData["ErrorMessage"] = "Please upload a valid document.";
-                return RedirectToAction("CandidateDashboard", new { candidateId });
+                return RedirectToAction("UploadDocuments");
             }
 
             var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "documents");
@@ -54,7 +143,7 @@ namespace RecruitmentProcessManagement.Controllers
 
             var candidateDocument = new CandidateDocument
             {
-                CandidateID = candidateId,
+                CandidateID = candidateId, 
                 DocumentType = documentType,
                 DocumentPath = "/uploads/documents/" + uniqueFileName,
                 VerificationStatus = "Pending"
@@ -63,7 +152,8 @@ namespace RecruitmentProcessManagement.Controllers
             await _candidateDocumentService.AddDocument(candidateDocument);
 
             TempData["SuccessMessage"] = "Document uploaded successfully!";
-            return RedirectToAction("CandidateDashboard", new { candidateId });
+            return RedirectToAction("UploadDocuments");
         }
+
     }
 }

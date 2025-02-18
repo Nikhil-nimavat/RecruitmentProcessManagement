@@ -269,21 +269,6 @@ namespace RecruitmentProcessManagement.Controllers
             _context.InterviewRounds.Add(interviewRound);
             await _context.SaveChangesAsync();
 
-            //foreach (var interviewerId in model.InterviewerIds)
-            //{
-            //    var feedback = new InterviewFeedback
-            //    {
-            //        InterviewRoundID = interviewRound.InterviewRoundID,
-            //        InterviewerID = interviewerId,
-            //        FeedbackText = "",
-            //        Rating = ""
-            //    };
-
-            //    _context.InterviewFeedbacks.Add(feedback);
-            ////}
-
-            //await _context.SaveChangesAsync();
-
             await _interviewService.SendMeetingInvites(model.CandidateId, model.InterviewerIds, model.InterviewDate);
 
             TempData["SuccessMessage"] = "Interview scheduled successfully. Emails sent!";
@@ -344,8 +329,7 @@ namespace RecruitmentProcessManagement.Controllers
             interview.Status = "Rescheduled";
             _context.Interviews.Update(interview);
             await _context.SaveChangesAsync();
-            //await _notificationService.SendInterviewNotification(interview.CandidateID,
-            //      $"Your interview has been rescheduled to {newDate:dddd, MMM dd, yyyy hh:mm tt}.");
+
             return RedirectToAction("ManageInterviews");
         }
 

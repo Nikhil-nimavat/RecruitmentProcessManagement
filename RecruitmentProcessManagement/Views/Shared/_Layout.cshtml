@@ -106,12 +106,13 @@
                                     Candidate Document
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+
                                     <a class="dropdown-item" asp-controller="CandidateDocument"
-                                       asp-action="CandidateDashboard">Dashboard</a>
+                                       asp-action="UploadDocuments">Upload Douments</a>
                                     @if (User.IsInRole("Admin") || User.IsInRole("HR") || User.IsInRole("Reviewer"))
                                     {
                                         <a class="dropdown-item" asp-controller="CandidateDocument"
-                                           asp-action="HRDashboard">HR Dashboard</a>
+                                           asp-action="DocumentVerificationList">Selected Candidates</a>
                                     }
                                 </ul>
                             </li>

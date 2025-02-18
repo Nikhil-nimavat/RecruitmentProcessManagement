@@ -1,0 +1,44 @@
+﻿@model RecruitmentProcessManagement.Models.Candidate
+
+<h2>Verify Documents for @Model.Name</h2>
+
+@if (Model.CandidateDocuments.Any())
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Document Type</th>
+                <th>Uploaded File</th>
+                <th>Verification Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var document in Model.CandidateDocuments)
+            {
+                <tr>
+                    <td>@document.DocumentType</td>
+                    <td><a href="@document.DocumentPath" target="_blank">View Document</a></td>
+                    <td>@document.VerificationStatus</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <form asp-controller="CandidateDocument" asp-action="Verify" method="post">
+        <input type="hidden" name="candidateId" value="@Model.CandidateID" />
+
+        <div class="form-group">
+            <label>Verification Status</label>
+            <select name="verificationStatus" class="form-control">
+                <option value="Verified">Verified</option>
+                <option value="Rejected">Rejected</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Submit Verification</button>
+    </form>
+}
+else
+{
+    <p>No documents were uploaded.</p>
+}

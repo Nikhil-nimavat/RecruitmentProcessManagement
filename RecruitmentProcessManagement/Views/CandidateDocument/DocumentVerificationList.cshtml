@@ -1,0 +1,34 @@
+﻿@model List<RecruitmentProcessManagement.Models.Candidate>
+
+<h2>Candidate Document Verification</h2>
+
+@if (Model.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Candidate Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var candidate in Model)
+            {
+                <tr>
+                    <td>@candidate.Name</td>
+                    <td>@candidate.Email</td>
+                    <td>@candidate.PhoneNumber</td>
+                    <td>
+                        <a asp-controller="CandidateDocument" asp-action="VerifyDocuments" asp-route-candidateId="@candidate.CandidateID" class="btn btn-primary">Verify Documents</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No candidates require document verification.</p>
+}
