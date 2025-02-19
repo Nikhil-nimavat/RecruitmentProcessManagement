@@ -42,9 +42,9 @@
                 }
             }
 
-            @if (User.IsInRole("Interviewer") || User.IsInRole("Admin"))
+            @if (User.IsInRole("Interviewer") || User.IsInRole("Admin") || User.IsInRole("HR"))
             {
-                <a asp-action="GiveFeedback" asp-route-id="@Model.InterviewId" class="btn btn-primary mt-3">
+                <a asp-action="GiveFeedback" asp-route-id="@Model.InterviewId" asp-route-roundNumber="@Model.RoundNumber" class="btn btn-primary mt-3">
                     Submit Feedback
                 </a>
             }

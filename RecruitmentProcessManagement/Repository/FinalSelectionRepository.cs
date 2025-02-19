@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection.Metadata;
+using DocumentFormat.OpenXml.Drawing;
+using iTextSharp.text.pdf;
+using Microsoft.EntityFrameworkCore;
 using RecruitmentProcessManagement.Data;
 using RecruitmentProcessManagement.Models;
 using RecruitmentProcessManagement.Repository.Interfaces;
@@ -19,7 +22,7 @@ namespace RecruitmentProcessManagement.Repository
             return await _context.Candidates.FirstOrDefaultAsync(c => c.CandidateID == candidateId);
         }
 
-        // ERROR CODE: Need library to do following FileStream not woking properly
+        // ERROR CODE: Library support needed
 
         public async Task<string> GenerateOfferLetter(int candidateId, int positionId, DateTime joiningDate)
         {

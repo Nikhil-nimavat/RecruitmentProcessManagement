@@ -10,7 +10,7 @@
 
 @if (TempData["ErrorMessage"] != null)
 {
-    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    <div class="visually-hidden">@TempData["ErrorMessage"]</div>
 }
 
 <h2>Manage Interviews</h2>
@@ -52,11 +52,10 @@
                                     data-interview-id="@interview.InterviewId">
                                 Reschedule
                             </button>
-
-                            <form asp-action="CancelInterview" method="post" style="display:inline;">
-                                <input type="hidden" name="interviewId" value="@interview.InterviewId" />
-                                <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
-                            </form>
+                        <form asp-action="CancelInterview" method="post" style="display:inline;">
+                            <input type="hidden" name="interviewId" value="@interview.InterviewId" />
+                            <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+                        </form>
                         
                     </td>
                 </tr>

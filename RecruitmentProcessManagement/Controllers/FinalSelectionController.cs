@@ -18,7 +18,6 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> SelectCandidate(int candidateId, int positionId, DateTime joiningDate)
         {
             string offerLetterPath = await _finalSelectionService.GenerateOfferLetter(candidateId, positionId, joiningDate);
@@ -27,7 +26,7 @@ namespace RecruitmentProcessManagement.Controllers
             if (candidate == null)
             {
                 TempData["ErrorMessage"] = "Candidate not found!";
-                return RedirectToAction("HRDashboard");
+                return RedirectToAction("DocumentVerificationList");
             }
 
             var existingUser = await _userManager.FindByEmailAsync(candidate.Email);
@@ -45,14 +44,14 @@ namespace RecruitmentProcessManagement.Controllers
                 if (!result.Succeeded)
                 {
                     TempData["ErrorMessage"] = "Error adding candidate to system!";
-                    return RedirectToAction("HRDashboard");
+                    return RedirectToAction("DocumentVerificationList");
                 }
             }
 
             await _finalSelectionService.MarkCandidateAsHired(candidateId, offerLetterPath);
 
             TempData["SuccessMessage"] = "Candidate selected and added to system!";
-            return RedirectToAction("HRDashboard");
+            return RedirectToAction("DocumentVerificationList");
         }
     }
 }

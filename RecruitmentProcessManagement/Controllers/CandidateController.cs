@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RecruitmentProcessManagement.Models;
 using RecruitmentProcessManagement.Repository;
@@ -6,6 +7,7 @@ using RecruitmentProcessManagement.Services.Intefaces;
 
 namespace RecruitmentProcessManagement.Controllers
 {
+    [Authorize(Roles = "Admin, Reviewer")]
     public class CandidateController : Controller
     {
         private readonly ICandidateService _candidateService;

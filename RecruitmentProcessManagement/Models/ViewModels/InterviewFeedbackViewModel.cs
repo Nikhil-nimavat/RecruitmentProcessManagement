@@ -7,6 +7,8 @@ namespace RecruitmentProcessManagement.Models.ViewModels
         public int InterviewRoundID { get; set; }
         public int InterviewID { get; set; }
 
+        public int RoundNumber { get; set; }
+
         [Required(ErrorMessage = "Feedback is required.")]
         [StringLength(1000, ErrorMessage = "Feedback cannot exceed 1000 characters.")]
         public string Feedback { get; set; }

@@ -46,7 +46,7 @@ namespace RecruitmentProcessManagement.Controllers
         //}
 
         [HttpGet]
-        [Authorize(Roles = "Admin, Reviewer")]
+        [Authorize(Roles = "Admin, Reviewer, HR")]
         public async Task<IActionResult> Index()
         {
             var reviews = await _reviewService.GetCandidateScreeningHistory();
@@ -67,7 +67,7 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, Reviewer")]
+        [Authorize(Roles = "Admin, Reviewer, HR")]
         public async Task<IActionResult> ReviewCandidate()
         {
             var model = new ReviewCandidateViewModel
@@ -112,7 +112,7 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Reviewer")]
+        [Authorize(Roles = "Admin, Reviewer, HR")]
         public async Task<IActionResult> SubmitReview(ReviewCandidateViewModel model)
         {
             var reviewerId = _userManager.GetUserId(User);
@@ -190,7 +190,7 @@ namespace RecruitmentProcessManagement.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Reviewer")]
+        [Authorize(Roles = "Admin, Reviewer, HR")]
         public IActionResult StartReview(CandidateReviewSelectionViewModel model)
         {
             if (model.SelectedCandidateID == 0 || model.SelectedPositionID == 0)
@@ -207,7 +207,7 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, Reviewer")]
+        [Authorize(Roles = "Admin, Reviewer, HR")]
         public async Task<IActionResult> EditReview(int candidateId, int positionId)
         {
             var review = await _context.CandidateReviews
@@ -264,7 +264,7 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Reviewer")]
+        [Authorize(Roles = "Admin, Reviewer, HR")]
         public async Task<IActionResult> EditReview(ReviewCandidateViewModel model)
         {
             if (!ModelState.IsValid)

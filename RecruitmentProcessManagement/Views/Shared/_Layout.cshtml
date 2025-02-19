@@ -34,11 +34,12 @@
                             <li class="nav-item">
                                 <a class="nav-link text-primary" asp-area="" asp-controller="Position" asp-action="Index">Jobs</a>
                             </li>
-                            @if (User.IsInRole("Admin") || User.IsInRole("Recruiter"))
+                            @if (User.IsInRole("Admin") || User.IsInRole("Reviewer"))
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-primary" asp-controller="BulkHiring" asp-action="UploadBulkCandidates">Bulk Hiring</a>
                                 </li>
+
                             }
                         }
 
@@ -58,9 +59,9 @@
                             </li>
                         }
 
-                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                        @if (SignInManager.IsSignedIn(User))
                         {
-                            @if (User.IsInRole("Admin") || User.IsInRole("Interviewer") || User.IsInRole("HR"))
+                            @if (User.IsInRole("Admin") || User.IsInRole("Interviewer") || User.IsInRole("HR") || User.IsInRole("Reviewer"))
                             {
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
@@ -109,7 +110,7 @@
 
                                     <a class="dropdown-item" asp-controller="CandidateDocument"
                                        asp-action="UploadDocuments">Upload Douments</a>
-                                    @if (User.IsInRole("Admin") || User.IsInRole("HR") || User.IsInRole("Reviewer"))
+                                    @if (User.IsInRole("Admin") || User.IsInRole("HR"))
                                     {
                                         <a class="dropdown-item" asp-controller="CandidateDocument"
                                            asp-action="DocumentVerificationList">Selected Candidates</a>

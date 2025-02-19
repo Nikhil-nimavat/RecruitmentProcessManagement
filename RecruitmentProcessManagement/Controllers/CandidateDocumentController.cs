@@ -10,7 +10,6 @@ using System.Security.Claims;
 
 namespace RecruitmentProcessManagement.Controllers
 {
-    [Authorize]
     public class CandidateDocumentController : Controller
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
@@ -34,7 +33,7 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, HR")]
+        [Authorize(Roles = "Admin,Reviewer, HR")]
         public async Task<IActionResult> DocumentVerificationList()
         {
             var selectedCandidates = await _context.CandidateReviews
@@ -48,7 +47,7 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, HR")]
+        [Authorize(Roles = "Admin,Reviewer, HR")]
         public async Task<IActionResult> VerifyDocuments(int candidateId)
         {
             var candidate = await _context.Candidates
@@ -64,7 +63,7 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, HR")]
+        [Authorize(Roles = "Admin,Reviewer, HR")]
         public async Task<IActionResult> Verify(int candidateId, string verificationStatus)
         {
             var candidate = await _context.Candidates.Include(c => c.CandidateDocuments).FirstOrDefaultAsync(c => c.CandidateID == candidateId);
@@ -102,7 +101,7 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> UploadDocuments()
+        public IActionResult UploadDocuments()
         {
             return View();
         }
@@ -110,9 +109,7 @@ namespace RecruitmentProcessManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> Upload(IFormFile documentFile, string documentType)
         {
-
             var userEmail = User.Identity.Name;
-
             var candidate = await _candidateService.GetCandidateByEmail(userEmail);
 
             if (candidate == null)
@@ -126,6 +123,15 @@ namespace RecruitmentProcessManagement.Controllers
             if (documentFile == null || documentFile.Length == 0)
             {
                 TempData["ErrorMessage"] = "Please upload a valid document.";
+                return RedirectToAction("UploadDocuments");
+            }
+
+            var extension = System.IO.Path.GetExtension(documentFile.FileName).ToLower();
+
+            //check for valid extension
+            if (extension != ".pdf")
+            {
+                TempData["ErrorMessage"] = "Please upload a valid file. Only pdfs are allowed.";
                 return RedirectToAction("UploadDocuments");
             }
 

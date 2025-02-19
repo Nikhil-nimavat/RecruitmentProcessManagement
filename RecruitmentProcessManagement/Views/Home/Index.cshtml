@@ -1,8 +1,18 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome To Recruitment Management</h1>
-    <p class="text-primary">Please Register yourself to start applying for world class opportunities by RPM</p>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <p class="text-primary">Start applying from today to world class opportunities on RPM app</p>
+    }
+    else
+    {
+        <p class="text-primary">Please Register yourself to start applying for world class opportunities by RPM</p>
+    }
+    
 </div>

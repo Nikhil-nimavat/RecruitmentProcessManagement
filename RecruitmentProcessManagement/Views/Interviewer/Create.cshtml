@@ -4,6 +4,13 @@
     ViewData["Title"] = "Add Interviewer";
 }
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
 <h2>Add Interviewer</h2>
 
 <form asp-action="Create">

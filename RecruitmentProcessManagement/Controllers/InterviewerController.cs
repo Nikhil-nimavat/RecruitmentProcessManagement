@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using RecruitmentProcessManagement.Models;
 using RecruitmentProcessManagement.Services.Intefaces;
 
@@ -7,10 +8,13 @@ namespace RecruitmentProcessManagement.Controllers
     public class InterviewerController : Controller
     {
         private readonly IInterviewerService _interviewerService;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public InterviewerController(IInterviewerService interviewerService)
+        public InterviewerController(IInterviewerService interviewerService,
+            UserManager<IdentityUser> userManager)
         {
             _interviewerService = interviewerService;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
@@ -28,6 +32,14 @@ namespace RecruitmentProcessManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Interviewer interviewer)
         {
+            var userexist = await _userManager.FindByEmailAsync(interviewer.Email);
+
+            if (userexist == null)
+            {
+                TempData["ErrorMessage"] = "This interviewer is not part of the company. Please enter valid Interviewer";
+                return RedirectToAction("Create");
+            }
+
             if (ModelState.IsValid)
             {
                 await _interviewerService.AddInterviewerAsync(interviewer);

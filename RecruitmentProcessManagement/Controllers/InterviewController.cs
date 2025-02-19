@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DocumentFormat.OpenXml.Drawing;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,7 @@ using RecruitmentProcessManagement.Services.Intefaces;
 
 namespace RecruitmentProcessManagement.Controllers
 {
-    [Authorize(Roles = "Admin, Recruiter")]
+    [Authorize(Roles = "Admin, Recruiter, Reviewer, HR, Interviewer")]
     public class InterviewController : Controller
     {
         private readonly IInterviewService _interviewService;
@@ -25,7 +26,6 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetBestInterviewers(int positionId)
         {
             var interviewers = await _interviewService.GetBestInterviewers(positionId);
@@ -33,7 +33,6 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ManageInterviews()
         {
             var interviews = await _context.InterviewRounds
@@ -57,8 +56,9 @@ namespace RecruitmentProcessManagement.Controllers
 
             return View(interviews);
         }
+
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> InterviewDetails(int interviewId, int roundNumber)
         {
             var interviewRound = await _context.InterviewRounds
@@ -98,53 +98,7 @@ namespace RecruitmentProcessManagement.Controllers
             return View(model);
         }
 
-        //[HttpGet]
-        //[Authorize(Roles = "Admin")]
-        //public async Task<IActionResult> InterviewDetails(int interviewId, int roundNumber)
-        //{
-        //    var interview = await _context.Interviews
-        //        .Include(i => i.Candidate)
-        //        .Include(i => i.Position)
-        //        .Include(i => i.InterviewRounds)
-        //            .ThenInclude(ir => ir.InterviewRoundInterviewers)
-        //            .ThenInclude(iri => iri.Interviewer)
-        //        .FirstOrDefaultAsync(i => i.InterviewID == interviewId);
-
-        //    if (interview == null)
-        //    {
-        //        TempData["ErrorMessage"] = "Interview not found.";
-        //        return RedirectToAction("ManageInterviews");
-        //    }
-
-        //    var interviewers = interview.InterviewRounds
-        //        .SelectMany(ir => ir.InterviewRoundInterviewers)
-        //        .Select(iri => iri.Interviewer.FullName)
-        //        .Distinct()
-        //        .ToList();
-
-        //    var selectedRound = interview.InterviewRounds
-        //        .FirstOrDefault(ir => ir.RoundNumber == roundNumber);
-
-        //    var model = new InterviewDetailsViewModel
-        //    {
-        //        InterviewId = interview.InterviewID,
-        //        CandidateName = interview.Candidate.Name,
-        //        PositionTitle = interview.Position.JobTitle,
-        //        InterviewType = interview.InterviewType,
-        //        InterviewDate = interview.InterviewDate,
-        //        Status = interview.Status,
-        //        Interviewers = interviewers,
-        //        Feedback = selectedRound?.Feedback ?? "Not Provided",
-        //        Rating = selectedRound?.Rating ?? 0,
-        //        RoundNumber = roundNumber
-        //    };
-
-        //    return View(model);
-        //}
-
-
         [HttpGet]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ScheduleInterview(int? interviewId)
         {
             var model = new Models.ViewModels.ScheduleInterviewViewModel
@@ -195,7 +149,6 @@ namespace RecruitmentProcessManagement.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ScheduleInterview(Models.ViewModels.ScheduleInterviewViewModel model)
         {
             if (!ModelState.IsValid)
@@ -276,7 +229,6 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DefineInterviewRounds(int positionId, List<string> roundTypes)
         {
             var existingRounds = await _context.InterviewRounds
@@ -302,7 +254,6 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetScheduledInterviews()
         {
             var interviews = await _context.Interviews
@@ -319,7 +270,6 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RescheduleInterview(int interviewId, DateTime newDate)
         {
             var interview = await _context.Interviews.FindAsync(interviewId);
@@ -334,7 +284,6 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CancelInterview(int interviewId)
         {
             try
@@ -363,14 +312,13 @@ namespace RecruitmentProcessManagement.Controllers
             }
             catch (Exception)
             {
-                TempData["SuccessMessage"] = "Interview canceled successfully."; 
+                TempData["SuccessMessage"] = "Interview canceled successfully.";
             }
 
             return RedirectToAction("ManageInterviews");
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> BulkScheduleInterviews(List<int> candidateIds, int positionId, DateTime interviewDate)
         {
             foreach (var candidateId in candidateIds)
@@ -391,11 +339,13 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Interviewer, Admin")]
-        public async Task<IActionResult> GiveFeedback(int id)
+        [Authorize(Roles = "Interviewer, Admin, HR")]
+        public async Task<IActionResult> GiveFeedback(int id, int roundnumber)
         {
             var interviewRound = await _context.InterviewRounds
-                .FirstOrDefaultAsync(r => r.InterviewRoundID == id);
+                .FirstOrDefaultAsync(r => r.InterviewID == id);
+            var roundnumbers = await _context.InterviewRounds
+                 .FirstOrDefaultAsync(r => r.RoundNumber == roundnumber);
 
             if (interviewRound == null)
             {
@@ -405,14 +355,15 @@ namespace RecruitmentProcessManagement.Controllers
             var model = new InterviewFeedbackViewModel
             {
                 InterviewRoundID = interviewRound.InterviewRoundID,
-                InterviewID = interviewRound.InterviewID
+                InterviewID = interviewRound.InterviewID,
+                RoundNumber = roundnumbers.RoundNumber
             };
 
             return View(model);
         }
 
         [HttpPost]
-        [Authorize(Roles = "Interviewer, Admin")]
+        [Authorize(Roles = "Interviewer, Admin, HR")]
         public async Task<IActionResult> GiveFeedback(InterviewFeedbackViewModel model)
         {
             if (!ModelState.IsValid)
@@ -423,15 +374,20 @@ namespace RecruitmentProcessManagement.Controllers
             var interviewRound = await _context.InterviewRounds
                 .FirstOrDefaultAsync(r => r.InterviewID == model.InterviewID);
 
+            var roundnumber = await _context.InterviewRounds
+                .FirstOrDefaultAsync(r => r.RoundNumber == model.RoundNumber);
+
             if (interviewRound == null)
             {
                 return NotFound();
             }
 
-            interviewRound.Feedback = model.Feedback;
-            interviewRound.Rating = model.Rating;
+            //interviewRound.Feedback = model.Feedback;
+            //interviewRound.Rating = model.Rating;
+            roundnumber.Feedback = model.Feedback;
+            roundnumber.Rating = model.Rating;
 
-            _context.Update(interviewRound);
+            _context.Update(roundnumber);
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Feedback submitted successfully!";

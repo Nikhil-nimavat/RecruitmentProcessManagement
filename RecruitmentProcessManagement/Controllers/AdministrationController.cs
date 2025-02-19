@@ -157,7 +157,6 @@ namespace RecruitmentProcessManagement.Controllers
         public async Task<IActionResult> EditUsersInRole(string roleId)
         {
             ViewBag.roleId = roleId;
-
             var role = await _roleManager.FindByIdAsync(roleId);
 
             if (role == null)

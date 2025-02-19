@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace RecruitmentProcessManagement.Controllers
 {
+    [Authorize(Roles = "Admin, Reviewer")]
     public class PositionController : Controller
     {
         private readonly IPositionService _positionService;
@@ -48,7 +49,6 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, Recruiter")]
         public IActionResult Create()
         {
             return View();
@@ -56,7 +56,6 @@ namespace RecruitmentProcessManagement.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, Recruiter")]
         public async Task<IActionResult> Create(Position position)
         {
             if (ModelState.IsValid)
@@ -68,7 +67,6 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, Recruiter")]
         public async Task<IActionResult> Edit(int id)
         {
             var position = await _positionService.GetPositionByIdAsync(id);
@@ -81,7 +79,6 @@ namespace RecruitmentProcessManagement.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, Recruiter")]
         public async Task<IActionResult> Edit(int id, Position position)
         {
             if (id != position.PositionID)
@@ -98,7 +95,6 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, Recruiter")]
         public async Task<IActionResult> Delete(int id)
         {
             var position = await _positionService.GetPositionByIdAsync(id);
@@ -111,7 +107,6 @@ namespace RecruitmentProcessManagement.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, Recruiter")]
         public async Task<IActionResult> Delete(Position position)
         {
             await _positionService.DeletePositionAsync(position.PositionID);
@@ -138,7 +133,6 @@ namespace RecruitmentProcessManagement.Controllers
         // Updated one with logic Encaped
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Recruiter")]
         public async Task<IActionResult> ClosePosition(int id, string reasonForClosure, int? linkedCandidateId)
         {
             try

@@ -16,7 +16,7 @@ namespace RecruitmentProcessManagement.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Reviewer")]
         public IActionResult UploadBulkCandidates()
         {
             return View();

@@ -5,7 +5,7 @@
 
 <h1>@ViewData["Title"]</h1>
 
-@if (User.IsInRole("Admin"))
+@if (User.IsInRole("Admin") || User.IsInRole("Reviewer"))
 {
     <a class="btn btn-primary mb-3" asp-controller="Position" asp-action="Create">Create New Position</a>
 }
@@ -32,7 +32,7 @@
                 <td>@position.YearsOfExperience</td>
                 <td>@position.Status</td>
                 <td>
-                    @if (User.IsInRole("Admin"))
+                    @if (User.IsInRole("Admin") || User.IsInRole("Reviewer"))
                     {
                         <a href="@Url.Action("Edit", new { id = position.PositionID })" class="btn btn-warning btn-sm">Edit</a>
                         <a href="@Url.Action("Delete", new { id = position.PositionID })" class="btn btn-danger btn-sm">Delete</a>
