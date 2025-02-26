@@ -23,6 +23,9 @@ namespace RecruitmentProcessManagement.Models
         [DataType(DataType.Date)]
         public DateTime ReviewDate { get; set; } = DateTime.Now;
 
+        [DataType(DataType.Date)]
+        public DateTime? OfferLetterDate { get; set; }
+
         //public Candidate candidate { get; set; }
 
         public List<CandidateSkillViewModel> CandidateSkills { get; set; }

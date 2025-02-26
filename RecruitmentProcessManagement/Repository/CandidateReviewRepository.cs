@@ -56,7 +56,6 @@ namespace RecruitmentProcessManagement.Repository
             if (review == null || candidate == null)
                 return false;
 
-            // Save selected skills
             foreach (var skill in skills)
             {
                 var existingSkill = await _context.CandidateSkills
@@ -80,14 +79,13 @@ namespace RecruitmentProcessManagement.Repository
             _context.CandidateReviews.Update(review);
             _context.Candidates.Update(candidate);
 
-            // If shortlisted, move to interview stage
             if (review.Status == "Shortlisted")
             {
                 _context.Interviews.Add(new Interview
                 {
                     CandidateID = candidate.CandidateID,
                     PositionID = review.PositionID,
-                    InterviewDate = DateTime.Now.AddDays(3), // Default to 3 days later
+                    InterviewDate = DateTime.Now.AddDays(3), 
                     InterviewType = "Technical",
                     Status = "Scheduled"
                 });

@@ -1,0 +1,25 @@
+
+@model List<InterviewReportViewModel>
+
+<h2>Interview-wise Report</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Interview Date</th>
+            <th>Total Interviews</th>
+            <th>Completed</th>
+            <th>Pending</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.InterviewDate.ToString("yyyy-MM-dd")</td>
+                <td>@item.TotalInterviews</td>
+                <td>@item.CompletedInterviews</td>
+                <td>@item.PendingInterviews</td>
+            </tr>
+        }
+    </tbody>
+</table>

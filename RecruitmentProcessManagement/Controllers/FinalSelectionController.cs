@@ -20,8 +20,6 @@ namespace RecruitmentProcessManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> SelectCandidate(int candidateId, int positionId, DateTime joiningDate)
         {
-            string offerLetterPath = await _finalSelectionService.GenerateOfferLetter(candidateId, positionId, joiningDate);
-
             var candidate = await _finalSelectionService.GetCandidateById(candidateId);
             if (candidate == null)
             {
@@ -47,6 +45,7 @@ namespace RecruitmentProcessManagement.Controllers
                     return RedirectToAction("DocumentVerificationList");
                 }
             }
+            string offerLetterPath = await _finalSelectionService.GenerateOfferLetter(candidateId, positionId, joiningDate);
 
             await _finalSelectionService.MarkCandidateAsHired(candidateId, offerLetterPath);
 

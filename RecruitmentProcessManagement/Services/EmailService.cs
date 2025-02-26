@@ -37,7 +37,7 @@ namespace RecruitmentProcessManagement.Services
                 From = new MailAddress(senderEmail),
                 Subject = subject,
                 Body = body,
-                IsBodyHtml = false
+                IsBodyHtml = true
             };
             
 

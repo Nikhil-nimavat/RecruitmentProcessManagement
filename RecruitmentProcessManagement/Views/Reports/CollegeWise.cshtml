@@ -1,0 +1,20 @@
+@model List<CollegeReportViewModel>
+
+<h2>College-wise Report</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>College Name</th>
+            <th>Selected Candidates</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.CollegeName</td>
+                <td>@item.TotalCandidates</td>
+            </tr>
+        }
+    </tbody>
+</table>

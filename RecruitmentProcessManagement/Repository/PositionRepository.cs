@@ -9,9 +9,9 @@ namespace RecruitmentProcessManagement.Repository
 {
     public class PositionRepository : IPositionRepository
     {
-        private readonly Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public PositionRepository(Data.ApplicationDbContext context)
+        public PositionRepository(ApplicationDbContext context)
         {
             _context = context;
         }

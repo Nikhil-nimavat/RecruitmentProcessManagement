@@ -6,6 +6,6 @@ namespace RecruitmentProcessManagement.Models
     {
         [Required]
         [Display(Name = "Role")]
-        public string RoleName { get; set; }
+        public required string RoleName { get; set; }
     }
 }

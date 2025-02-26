@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authentication;
 
 namespace RecruitmentProcessManagement.Models
 {
@@ -14,5 +15,9 @@ namespace RecruitmentProcessManagement.Models
 
         [Display(Name = "Remember Me")]
         public bool RememberMe { get; set; }
+
+        public string? ReturnUrl { get; set; }
+
+        public IList<AuthenticationScheme>? ExternalLogins { get; set; }
     }
 }

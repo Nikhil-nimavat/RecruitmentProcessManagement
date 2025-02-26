@@ -12,7 +12,7 @@ namespace RecruitmentProcessManagement.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<IdentityUser> _userManager;
         public AdministrationController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
-        { 
+        {
             _roleManager = roleManager;
             _userManager = userManager;
         }
@@ -30,14 +30,14 @@ namespace RecruitmentProcessManagement.Controllers
         {
             if (ModelState.IsValid)
             {
-                bool roleExists = await _roleManager.RoleExistsAsync(roleModel?.RoleName);
+                bool roleExists = await _roleManager.RoleExistsAsync(roleModel.RoleName);
                 if (roleExists)
                 {
                     ModelState.AddModelError("", "Role Already Exists");
                 }
                 else
                 {
-                    IdentityRole identityRole = new IdentityRole
+                    IdentityRole identityRole = new()
                     {
                         Name = roleModel?.RoleName
                     };
@@ -69,7 +69,7 @@ namespace RecruitmentProcessManagement.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditRole(string roleId)
         {
-            IdentityRole role = await _roleManager.FindByIdAsync(roleId);
+            var role = await _roleManager.FindByIdAsync(roleId);
             if (role == null)
             {
                 return View("Error");
@@ -141,7 +141,7 @@ namespace RecruitmentProcessManagement.Controllers
             var result = await _roleManager.DeleteAsync(role);
             if (result.Succeeded)
             {
-                return RedirectToAction("ListRoles"); 
+                return RedirectToAction("ListRoles");
             }
 
             foreach (var error in result.Errors)

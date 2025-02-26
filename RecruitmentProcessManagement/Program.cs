@@ -28,6 +28,12 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+// Setting up the token lifespan
+builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+{
+    // Set token lifespan to 2 hours
+    options.TokenLifespan = TimeSpan.FromHours(2);
+});
 
 // Add DI Services.
 builder.Services.AddScoped<IPositionService, PositionService>();
@@ -59,6 +65,9 @@ builder.Services.AddScoped<IInterviewService, InterviewService>();
 
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+
+builder.Services.AddScoped<IReportService,ReportService>();
+builder.Services.AddScoped<IReportRepository,ReportRepository>();
 
 
 var app = builder.Build();

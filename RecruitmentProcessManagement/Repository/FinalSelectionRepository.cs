@@ -1,5 +1,4 @@
 ﻿using System.Reflection.Metadata;
-using DocumentFormat.OpenXml.Drawing;
 using iTextSharp.text.pdf;
 using Microsoft.EntityFrameworkCore;
 using RecruitmentProcessManagement.Data;
@@ -10,9 +9,9 @@ namespace RecruitmentProcessManagement.Repository
 {
     public class FinalSelectionRepository: Interfaces.IFinalSelectionRepository
     {
-        private readonly Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public FinalSelectionRepository(Data.ApplicationDbContext context)
+        public FinalSelectionRepository(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -22,22 +21,29 @@ namespace RecruitmentProcessManagement.Repository
             return await _context.Candidates.FirstOrDefaultAsync(c => c.CandidateID == candidateId);
         }
 
-        // ERROR CODE: Library support needed
-
         public async Task<string> GenerateOfferLetter(int candidateId, int positionId, DateTime joiningDate)
         {
-            string filePath = $"wwwroot/uploads/offer_letters/Offer_{candidateId}.pdf";
+            string filepath = $"wwwroot/uploads/offer_letters/Offer_{candidateId}.pdf";
+            string directorypath = Path.GetDirectoryName(filepath);    
 
-            //using (FileStream fs = new FileStream(filePath, FileMode.Create))
-            //{
-            //    Document doc = new Document();
-            //    PdfWriter.GetInstance(doc, fs);
-            //    doc.Open();
-            //    doc.Add(new Paragraph($"Congratulations! You are selected for Position {positionId}. Your joining date is {joiningDate}."));
-            //    doc.Close();
-            //}
+            if (!Directory.Exists(directorypath))
+            {
+                Directory.CreateDirectory(directorypath);
+            }
 
-            return filePath;
+            using (FileStream fs = new FileStream(filepath, FileMode.Create))
+            {
+                iTextSharp.text.Document doc = new iTextSharp.text.Document();
+                PdfWriter.GetInstance(doc, fs);
+                doc.Open();
+                
+                iTextSharp.text.Paragraph paragraph = new iTextSharp.text.Paragraph($"Congratulations! You are selected for Position {positionId}. Your joining date is {joiningDate}.");
+                doc.Add(paragraph);
+
+                doc.Close();
+            }
+
+            return filepath;
         }
 
         public async Task MarkCandidateAsHired(int candidateId, string offerLetterPath)

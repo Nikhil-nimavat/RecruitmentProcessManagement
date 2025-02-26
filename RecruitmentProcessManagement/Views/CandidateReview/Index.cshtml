@@ -13,6 +13,8 @@
             <th>Position</th>
             <th>Status</th>
             <th>Review Date</th>
+            @* <th>Offer Letter Date</th> *@
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -27,13 +29,73 @@
                     </span>
                 </td>
                 <td>@review.ReviewDate.ToString("yyyy-MM-dd")</td>
+                @* <td>
+                    @if (review.OfferLetterDate.HasValue)
+                    {
+                        <span>@review.OfferLetterDate.Value.ToString("yyyy-MM-dd")</span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Not Generated</span>
+                    }
+                </td> *@
                 <td>
                     <a asp-action="EditReview" asp-route-candidateId="@review.CandidateID"
-                       asp-route-positionId="@review.PositionID" class="btn btn-primary btn-sm"> 
-                         Update Review 
-                     </a> 
-                 </td>
+                    asp-route-positionId="@review.PositionID" class="btn btn-warning btn-sm"> 
+                        Update Review 
+                    </a>
+
+                    @* @if (review.Status == "Selected")
+                    {
+                        <button type="button" class="btn btn-success btn-sm" 
+                            data-bs-toggle="modal" data-bs-target="#offerLetterModal"
+                            data-candidate-id="@review.CandidateID"
+                            data-position-id="@review.PositionID">
+                            Offer Letter
+                        </button>
+                    } *@
+                </td>
             </tr>
         }
     </tbody>
 </table>
+
+<!-- Offer Letter Modal -->
+<div class="modal fade" id="offerLetterModal" tabindex="-1" aria-labelledby="offerLetterModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="offerLetterModalLabel">Joining Date</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="offerLetterForm" method="post">
+                    <input type="hidden" id="offerCandidateId" name="candidateId" />
+                    <input type="hidden" id="offerPositionId" name="positionId" />
+
+                    <label for="offerDate">Input Date:</label>
+                    <input type="date" id="offerDate" name="offerLetterDate" class="form-control" required />
+
+                    <button type="submit" class="btn btn-primary mt-3">Generate</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var offerLetterModal = document.getElementById('offerLetterModal');
+        offerLetterModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var candidateId = button.getAttribute('data-candidate-id');
+            var positionId = button.getAttribute('data-position-id');
+            document.getElementById('offerCandidateId').value = candidateId;
+            document.getElementById('offerPositionId').value = positionId;
+            document.getElementById('offerDate').value = new Date().toISOString().split('T')[0]; 
+        });
+
+        document.getElementById("offerLetterForm").action = "@Url.Action("SelectCandidate", "FinalSelection")";
+    });
+</script>
+

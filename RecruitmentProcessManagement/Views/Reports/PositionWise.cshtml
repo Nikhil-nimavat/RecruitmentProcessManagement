@@ -1,0 +1,21 @@
+
+@model List<PositionReportViewModel>
+
+<h2>Position-wise Report</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Position</th>
+            <th>Selected Candidates</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.PositionTitle</td>
+                <td>@item.TotalLinkedCandidates</td>
+            </tr>
+        }
+    </tbody>
+</table>

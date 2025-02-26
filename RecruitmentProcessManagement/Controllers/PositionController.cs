@@ -113,25 +113,6 @@ namespace RecruitmentProcessManagement.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Close(int id, string ReasonForClosure)
-        //{
-        //    var position = await _positionService.GetPositionByIdAsync(id);
-        //    if (position == null)
-        //    {
-        //        return NotFound();
-        //    }
-                
-        //    position.Status = "Closed";
-        //    position.ReasonForClosure = ReasonForClosure;
-        //    await _positionService.UpdatePositionAsync(position);
-
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-
-        // Updated one with logic Encaped
-
         [HttpPost]
         public async Task<IActionResult> ClosePosition(int id, string reasonForClosure, int? linkedCandidateId)
         {

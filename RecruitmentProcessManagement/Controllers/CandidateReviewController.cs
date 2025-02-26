@@ -11,8 +11,6 @@ using RecruitmentProcessManagement.Services.Intefaces;
 
 namespace RecruitmentProcessManagement.Controllers
 {
-    //[Route("api/[controller]")]
-    //[ApiController]
     public class CandidateReviewController : Controller
     {
         private readonly ICandidateReviewService _reviewService;
@@ -27,24 +25,6 @@ namespace RecruitmentProcessManagement.Controllers
             _userManager = userManager;
         }
 
-        //[HttpGet]
-        //[Authorize(Roles = "Admin, Reviewer")]
-        //public async Task<IActionResult> Index()
-        //{
-        //    var reviews = await _reviewService.GetCandidateScreeningHistory();
-
-        //    // we want matching name of this id into the candidate and position table:
-        //    var reviewViewModels = reviews.Select(r => new CandidateReviewViewModel
-        //    {
-        //        CandidateID = r.CandidateID,
-        //        PositionID = r.PositionID,
-        //        Status = r.Status,
-        //        ReviewDate = r.ReviewDate
-        //    }).ToList();
-
-        //    return View(reviewViewModels);
-        //}
-
         [HttpGet]
         [Authorize(Roles = "Admin, Reviewer, HR")]
         public async Task<IActionResult> Index()
@@ -54,10 +34,10 @@ namespace RecruitmentProcessManagement.Controllers
             var reviewViewModels = reviews.Select(r => new CandidateReviewViewModel
             {
                 CandidateID = r.CandidateID,
-                CandidateName = r.Candidate?.Name,
+                CandidateName = r.Candidate.Name,
 
                 PositionID = r.PositionID,
-                JobTitle = r.Position?.JobTitle,
+                JobTitle = r.Position.JobTitle,
 
                 Status = r.Status,
                 ReviewDate = r.ReviewDate
